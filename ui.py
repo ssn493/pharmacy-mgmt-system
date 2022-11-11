@@ -93,17 +93,20 @@ def ins_rows_treeview(tv, rows):
         i += 1
 
 
-def sel_data_dialog(table,search_attr):
+def sel_data_dialog(table, search_attr):
     main = tk.Toplevel()
     main.title("Insert Selected Data")
     rootframe = ttk.Frame(self.main)
     grid_config(rootframe)
 
     tv = easy_treeview(master, columns)
-    tv.grid(row=0 ,column=0 , rowspan=3 ,columnspan=8, padx=6, pady=6, sticky='nswe')
+    tv.grid(row=0, column=0, rowspan=3, columnspan=8, padx=6, pady=6, sticky="nswe")
 
     l1 = ttk.Label(self.rootframe, text=f"Enter {search_attr}")
-    l1.grid(row=3, column=0, )
+    l1.grid(
+        row=3,
+        column=0,
+    )
 
     search_textvar = tk.StringVar()
     search_field = ttk.Entry(
@@ -124,36 +127,42 @@ class pos_page:
             self.note,
         )
 
+        l0 = ttk.Label(self.c, text="Register New Customer", style="big.TLabel")
+        l0.grid(row=0, column=0, columnspan=8, padx=6, pady=2, sticky="ew")
+
         l1 = ttk.Label(self.c, text="Customer Name", style="small.TLabel")
-        l1.grid(row=0, column=0, padx=6, pady=2, sticky="sw")
+        l1.grid(row=1, column=0, padx=6, pady=2, sticky="sw")
 
         self.name_entry = ttk.Entry(self.c)
-        self.name_entry.grid(row=1, column=0, padx=6, pady=2, columnspan=8, sticky="ew")
+        self.name_entry.grid(row=2, column=0, padx=6, pady=2, columnspan=8, sticky="ew")
 
         l2 = ttk.Label(self.c, text="Age", style="small.TLabel")
-        l2.grid(row=2, column=0, padx=6, pady=2, sticky="sw")
+        l2.grid(row=3, column=0, padx=6, pady=2, sticky="sw")
 
         self.age_entry = ttk.Entry(self.c)
-        self.age_entry.grid(row=3, column=0, padx=6, pady=2, columnspan=3, sticky="ew")
+        self.age_entry.grid(row=4, column=0, padx=6, pady=2, columnspan=3, sticky="ew")
 
         l3 = ttk.Label(self.c, text="Sex", style="small.TLabel")
-        l3.grid(row=2, column=4, padx=6, pady=2, sticky="sw")
+        l3.grid(row=3, column=4, padx=6, pady=2, sticky="sw")
 
         self.sex_entry = ttk.Entry(self.c)
-        self.sex_entry.grid(row=3, column=4, padx=6, pady=2, columnspan=4, sticky="ew")
+        self.sex_entry.grid(row=4, column=4, padx=6, pady=2, columnspan=4, sticky="ew")
 
         l4 = ttk.Label(self.c, text="Address", style="small.TLabel")
-        l4.grid(row=4, column=0, padx=6, pady=2, sticky="sw")
+        l4.grid(row=5, column=0, padx=6, pady=2, sticky="sw")
 
         self.addr_entry = ttk.Entry(self.c)
-        self.addr_entry.grid(row=5, column=0, padx=6, pady=2, columnspan=8, sticky="ew")
+        self.addr_entry.grid(row=6, column=0, padx=6, pady=2, columnspan=8, sticky="ew")
+
+        l5 = ttk.Label(self.c, text="or", style="big.TLabel")
+        l5.grid(row=7, column=0, columnspan=8, padx=6, pady=2, sticky="ew")
 
         self.cust_ins_btn = ttk.Button(
             self.c, text="Select Existing Customer", style="accent.TButton"
         )
 
         self.cust_ins_btn.grid(
-            row=6, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
+            row=8, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
         )
 
         self.cust_table = treeview_toplevel()

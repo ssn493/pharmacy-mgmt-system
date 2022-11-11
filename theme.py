@@ -23,7 +23,7 @@ def style(root):
     font = ("Inter Light", 11)
     bold = ("Inter", 11)
     header = ("Inter", 12)
-    bigfont = ("Inter Light", 14)
+    bigfont = ("Inter", 13)
     smallfont = ("Inter Light", 9)
 
     style.configure(".", bg=colorscheme["light"], font=font)
@@ -70,7 +70,7 @@ def style(root):
         lightcolor=[("pressed", colorscheme["darkh"])],
         darkcolor=[("pressed", colorscheme["darkh"])],
         focuscolor=[("pressed", colorscheme["accent"])],
-        bordercolor=[("pressed", colorscheme["light"])],
+        bordercolor=[("pressed", colorscheme["dark"])],
     )
 
     style.configure(
@@ -88,7 +88,7 @@ def style(root):
             ("disabled", colorscheme["lightgrey"]),
         ],
     )
-    style.configure("big.TLabel", font=bigfont, padding=6)
+    style.configure("big.TLabel", font=bigfont, padding=6, anchor=tk.CENTER)
     style.configure("small.TLabel", font=smallfont, padding=(0, 6, 0, 0))
 
     style.configure(
