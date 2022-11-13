@@ -176,6 +176,7 @@ def style(root):
         padding=(4, 2),
     )
 
+    style.layout("Notebook", [])
     style.element_create("Plain.Notebook.tab", "from", "clam")
     style.layout(
         "TNotebook.Tab",
@@ -185,18 +186,29 @@ def style(root):
                 {
                     "children": [
                         (
-                            "Notebook.padding",
+                            "Notebook.border",
                             {
-                                "side": "top",
                                 "children": [
                                     (
-                                        "Notebook.focus",
+                                        "Notebook.padding",
                                         {
                                             "side": "top",
                                             "children": [
                                                 (
-                                                    "Notebook.label",
-                                                    {"side": "top", "sticky": ""},
+                                                    "Notebook.focus",
+                                                    {
+                                                        "side": "top",
+                                                        "children": [
+                                                            (
+                                                                "Notebook.label",
+                                                                {
+                                                                    "side": "top",
+                                                                    "sticky": "ns",
+                                                                },
+                                                            )
+                                                        ],
+                                                        "sticky": "nswe",
+                                                    },
                                                 )
                                             ],
                                             "sticky": "nswe",
@@ -220,37 +232,66 @@ def style(root):
         background=colorscheme["light"],
         padding=(6, 10),
         bd=0,
+        lightcolor=colorscheme["lighth"],
         darkcolor=colorscheme["light"],
-        lightcolor=colorscheme["light"],
         tabposition="n",
     )
+
+    style.configure(
+        "TNotebook.Tab",
+        background=colorscheme["lighth"],
+        bordercolor=colorscheme["lightgrey"],
+        focuscolor=colorscheme["light"],
+        font=bold,
+        relief="flat",
+        # borderwidth=20,
+    )
+    style.map("TNotebook.Tab", background=[("selected", colorscheme["light"])])
+
     style.configure(
         "ribbon.TNotebook",
         tabposition="wn",
         bordercolor=colorscheme["light"],
-        padding=10,
+        padding=(6),
+        tabmargins=0,
     )
     style.configure(
-        "TNotebook.Tab",
-        background=colorscheme["light"],
-        bordercolor=colorscheme["lightgrey"],
+        "ribbon.TNotebook.Tab",
+        background=colorscheme["lightgrey"],
+        bordercolor=colorscheme["light"],
+        lightcolor=colorscheme["dark"],
+        darkcolor=colorscheme["dark"],
         focuscolor=colorscheme["light"],
-        font=bold
-        # borderwidth=20,
+        font=bold,
+        bd=0,
+        borderwidth=6,
+        padding=0,
     )
-    style.map("TNotebook", background=[("selected", "green")])
+    style.map(
+        "ribbon.TNotebook.Tab",
+        background=[("selected", colorscheme["light"])],
+        padding=[("selected", 0)],
+    )
 
     style.configure(
         "TMenubutton",
         bordercolor=colorscheme["grey"],
         borderwidth=2,
         background=colorscheme["lighth"],
-        padding=(6, 6),
+        padding=(4, 4),
         darkcolor=colorscheme["light"],
         lightcolor=colorscheme["light"],
         relief="flat",
         font=font,
     )
-    print(style.element_options("TMenubutton"))
+    print(style.layout("TFrame"))
 
     return style
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    s = style(root)
+    print(s.element_options("TFrame.border"))
+
+    root.mainloop()

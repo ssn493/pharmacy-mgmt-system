@@ -1,37 +1,18 @@
 from tkinter import ttk
 import tkinter as tk
 import datetime
-from pharmacy_backend import meds, customers
+from pharmacy_backend import (
+    meds,
+    customers,
+    get_field_names,
+    search_by_field,
+    search_cust_by_name,
+    get_table,
+    insert_from_dict,
+    close,
+)
 from theme import style
-
-
-def grid_config(root, rows=8, cols=8):
-    i = 0
-    while i < cols:
-        root.grid_columnconfigure(i, weight=1, minsize=40)
-        i += 1
-
-
-def next_tab(notebk):
-    all_tabs = notebk.tabs()
-    sel_tab = notebk.select()
-
-    if sel_tab == all_tabs[-1]:
-        pass
-    else:
-        i = all_tabs.index(sel_tab)
-        notebk.select(all_tabs[i + 1])
-
-
-def prev_tab(notebk):
-    all_tabs = notebk.tabs()
-    sel_tab = notebk.select()
-
-    if sel_tab == all_tabs[0]:
-        pass
-    else:
-        i = all_tabs.index(sel_tab)
-        notebk.select(all_tabs[i - 1])
+from ui_utils import *
 
 
 class treeview_toplevel:
@@ -68,120 +49,82 @@ class treeview_toplevel:
         self.main.deiconify()
 
 
-def easy_treeview(master, columns):
-    tv = ttk.Treeview(master=master, columns=columns, show="headings")
-
-    for column in columns:
-        tv.column(column, width=100, anchor="c", stretch=tk.YES)
-        tv.heading(column, text=str(column))
-
-    return tv
-
-
-def ins_row_treeview(tv, row_data):
-    tv = ttk.Treeview()
-    num_rows = len(tv.get_children())
-    tv.insert(parent="", index=num_rows, iid=num_rows)
-
-
-def ins_rows_treeview(tv, rows):
-    tv = ttk.Treeview()
-    num_rows = len(tv.get_children())
-    i = 0
-    for row in rows:
-        tv.insert(parent="", index=num_rows + i, iid=num_rows + i)
-        i += 1
-
-
-def sel_data_dialog(table, search_attr):
-    main = tk.Toplevel()
-    main.title("Insert Selected Data")
-    rootframe = ttk.Frame(self.main)
-    grid_config(rootframe)
-
-    tv = easy_treeview(master, columns)
-    tv.grid(row=0, column=0, rowspan=3, columnspan=8, padx=6, pady=6, sticky="nswe")
-
-    l1 = ttk.Label(self.rootframe, text=f"Enter {search_attr}")
-    l1.grid(
-        row=3,
-        column=0,
-    )
-
-    search_textvar = tk.StringVar()
-    search_field = ttk.Entry(
-        self.rootframe, textvariable=self.search_textvar, name="search"
-    )
-    search_btn = ttk.Button(self.rootframe, text="Search")
-    sel_btn = ttk.Button(
-        master=self.rootframe, text="Insert Selected Data", style="accent.TButton"
-    )
-
-
 class pos_page:
     def __init__(self, master, root_window):
         self.rootframe = ttk.Frame(master, style="border.TFrame")
         self.note = ttk.Notebook(self.rootframe)
 
+        #########################
+        # Customer Details Page #
+        #########################
         self.c = ttk.Frame(
             self.note,
         )
 
-        l0 = ttk.Label(self.c, text="Register New Customer", style="big.TLabel")
-        l0.grid(row=0, column=0, columnspan=8, padx=6, pady=2, sticky="ew")
+        self.cust_reg_lbl = ttk.Label(
+            self.c, text="Register New Customer", style="big.TLabel"
+        )
+        self.cust_reg_lbl.grid(
+            row=0, column=0, columnspan=8, padx=6, pady=2, sticky="ew"
+        )
 
         l1 = ttk.Label(self.c, text="Customer Name", style="small.TLabel")
         l1.grid(row=1, column=0, padx=6, pady=2, sticky="sw")
 
-        self.name_entry = ttk.Entry(self.c)
-        self.name_entry.grid(row=2, column=0, padx=6, pady=2, columnspan=8, sticky="ew")
+        self.cust_name_entry = ttk.Entry(self.c)
+        self.cust_name_entry.grid(
+            row=2, column=0, padx=6, pady=2, columnspan=8, sticky="ew"
+        )
 
         l2 = ttk.Label(self.c, text="Age", style="small.TLabel")
         l2.grid(row=3, column=0, padx=6, pady=2, sticky="sw")
 
-        self.age_entry = ttk.Entry(self.c)
-        self.age_entry.grid(row=4, column=0, padx=6, pady=2, columnspan=3, sticky="ew")
+        self.cust_age_entry = ttk.Entry(self.c)
+        self.cust_age_entry.grid(
+            row=4, column=0, padx=6, pady=2, columnspan=3, sticky="ew"
+        )
 
         l3 = ttk.Label(self.c, text="Sex", style="small.TLabel")
         l3.grid(row=3, column=4, padx=6, pady=2, sticky="sw")
 
-        self.sex_entry = ttk.Entry(self.c)
-        self.sex_entry.grid(row=4, column=4, padx=6, pady=2, columnspan=4, sticky="ew")
+        self.cust_sex_entry = ttk.Entry(self.c)
+        self.cust_sex_entry.grid(
+            row=4, column=4, padx=6, pady=2, columnspan=4, sticky="ew"
+        )
 
         l4 = ttk.Label(self.c, text="Address", style="small.TLabel")
         l4.grid(row=5, column=0, padx=6, pady=2, sticky="sw")
 
-        self.addr_entry = ttk.Entry(self.c)
-        self.addr_entry.grid(row=6, column=0, padx=6, pady=2, columnspan=8, sticky="ew")
+        self.cust_addr_entry = ttk.Entry(self.c)
+        self.cust_addr_entry.grid(
+            row=6, column=0, padx=6, pady=2, columnspan=8, sticky="ew"
+        )
+
+        self.reg_new_cust_btn = ttk.Button(
+            self.c,
+            text="Register New Customer",
+            style="accent.TButton",
+            command=self.reg_new_cust,
+        )
+        self.reg_new_cust_btn.grid(
+            row=7, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
+        )
 
         l5 = ttk.Label(self.c, text="or", style="big.TLabel")
-        l5.grid(row=7, column=0, columnspan=8, padx=6, pady=2, sticky="ew")
+        l5.grid(row=8, column=0, columnspan=8, padx=6, pady=2, sticky="ew")
 
-        self.cust_ins_btn = ttk.Button(
+        self.sel_existing_cust_btn = ttk.Button(
             self.c, text="Select Existing Customer", style="accent.TButton"
         )
-
-        self.cust_ins_btn.grid(
-            row=8, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
+        self.sel_existing_cust_btn.grid(
+            row=9, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
         )
-
-        self.cust_table = treeview_toplevel()
-        self.cust_table.tv.config(columns=("1", "2", "3", "4"), show="headings")
-        self.cust_table.tv.column("1", width=100, anchor="c", stretch=tk.YES)
-        self.cust_table.tv.column("2", anchor="c", stretch=tk.YES)
-        self.cust_table.tv.column("3", anchor="c", stretch=tk.YES)
-        self.cust_table.tv.column("4", anchor="c", stretch=tk.YES)
-
-        # Assigning the heading names to the
-        # respective columns
-        self.cust_table.tv.heading("1", text="Name")
-        self.cust_table.tv.heading("2", text="Sex")
-        self.cust_table.tv.heading("3", text="Age")
-        self.cust_table.tv.heading("4", text="Address")
-
-        self.cust_ins_btn.config(command=self.cust_table.run)
+        self.sel_existing_cust_btn.config(command=self.sel_existing_customer)
         grid_config(self.c)
 
+        #########################
+        # Medicine Details Page #
+        #########################
         self.m = ttk.Frame(master, style="Table.TFrame")
 
         l1 = ttk.Label(self.m, text="Medicine Name", style="small.TLabel")
@@ -213,7 +156,10 @@ class pos_page:
 
         grid_config(self.m)
 
-        self.p = ttk.Frame(master, style="Table.TFrame")
+        #########################
+        # Payment Details Page #
+        #########################
+        self.p = ttk.Frame(master)
 
         l1 = ttk.Label(self.p, text="Payment Date", style="small.TLabel")
         l1.grid(row=0, column=0, padx=6, pady=2, sticky="sw")
@@ -241,6 +187,7 @@ class pos_page:
         self.payment_method_menu = ttk.OptionMenu(
             self.p, var, *["Cash", "Credit/Debit Card", "UPI"]
         )
+        # self.payment_method_menu.config()
         self.payment_method_menu.grid(
             row=2, column=0, padx=6, pady=8, columnspan=8, sticky="ew"
         )
@@ -264,13 +211,61 @@ class pos_page:
 
         self.rootframe.pack(fill="both", expand=1)
 
-    def get_cust_data(self):
+    def sel_existing_customer(self):
+        search_attr = "name"
+
+        main = tk.Toplevel()
+        main.title("Select Existing Customer")
+        rootframe = ttk.Frame(main)
+        rootframe.pack(fill="both", expand=1)
+        grid_config(rootframe)
+
+        self.cust_table = easy_treeview(rootframe, get_field_names(customers))
+        ins_rows_treeview(self.cust_table, get_table(customers))
+        self.cust_table.grid(
+            row=0, column=0, rowspan=3, columnspan=8, padx=6, pady=6, sticky="nswe"
+        )
+
+        l1 = ttk.Label(rootframe, text=f"Enter {search_attr}", style="small.TLabel")
+        l1.grid(row=3, column=0, padx=6, pady=2, sticky="sw")
+
+        search_textvar = tk.StringVar()
+        search_field = ttk.Entry(rootframe, textvariable=search_textvar)
+        search_field.grid(row=4, column=0, columnspan=8, padx=6, pady=2, sticky="swe")
+
+        sel_button = ttk.Button(
+            master=rootframe,
+            text="Insert Selected Data",
+            style="accent.TButton",
+            command=self.display_cust_data,
+        )
+        sel_button.grid(row=5, column=0, columnspan=8, padx=6, pady=6, sticky="swe")
+
+        s = lambda: update_treeview(
+            self.cust_table,
+            search_by_field(customers, search_attr, search_textvar.get()),
+        )
+        search_field.config(validate="key", validatecommand=s)
+
+        self.cust_reg_lbl.config(text="Verify Customer Details")
+        hide_grid_widget(self.reg_new_cust_btn)
+
+    def display_cust_data(self):
+        data = self.cust_table.selection()
+        print(data)
+        self.cust_name_entry.insert(tk.END, data[1])
+        self.cust_age_entry.insert(tk.END, data[2])
+        self.cust_sex_entry.insert(tk.END, data[3])
+        self.cust_addr_entry.insert(tk.END, data[4])
+
+    def reg_new_cust(self):
         data = {}
-        data["name"] = self.name_entry.get("1.0", "END")
-        data["age"] = self.name_entry.get("1.0", "END")
-        data["sex"] = self.name_entry.get("1.0", "END")
-        data["addr"] = self.name_entry.get("1.0", "END")
-        return data
+        data["name"] = self.cust_name_entry.get()
+        data["age"] = self.cust_age_entry.get()
+        data["sex"] = self.cust_sex_entry.get()
+        data["address"] = self.cust_addr_entry.get()
+
+        insert_from_dict(customers, data)
 
     def as_tab(self):
         return self.rootframe
@@ -396,11 +391,38 @@ class inventory_page:
 
     def get_cust_data(self):
         data = {}
-        data["name"] = self.name_entry.get("1.0", "END")
-        data["age"] = self.name_entry.get("1.0", "END")
-        data["sex"] = self.name_entry.get("1.0", "END")
-        data["addr"] = self.name_entry.get("1.0", "END")
+        data["name"] = self.name_entry.get()
+        data["age"] = self.name_entry.get()
+        data["sex"] = self.name_entry.get()
+        data["addr"] = self.name_entry.get()
         return data
+
+    def as_tab(self):
+        return self.rootframe
+
+
+class about_page:
+    def __init__(self, master, root_window):
+        self.root_window = root_window
+        self.rootframe = ttk.Frame(master)
+        l0 = ttk.Label(self.rootframe, text="About", style="big.TLabel")
+        l0.pack(padx=20, pady=15, anchor="n", expand=1)
+        l1 = ttk.Label(
+            self.rootframe,
+            text="Made by Subhrojyoti Sen and an unnamed intern at Bajaj Finserv and HRC.",
+        )
+        l1.pack(padx=20, pady=5, anchor="n", expand=1)
+        l2 = ttk.Label(
+            self.rootframe, text="Moonlighting is illegal.", style="small.TLabel"
+        )
+        l2.pack(padx=20, pady=5, anchor="n", expand=1)
+        quit_btn = ttk.Button(self.rootframe, text="Quit", command=self.quit_app)
+        quit_btn.pack(padx=20, pady=10, anchor="center")
+
+    def quit_app(self):
+        close()
+        self.root_window.destroy()
+        exit()
 
     def as_tab(self):
         return self.rootframe
@@ -413,8 +435,11 @@ if __name__ == "__main__":
 
     note = ttk.Notebook(root, style="ribbon.TNotebook")
 
-    p = pos_page(note, root)
+    p = pos_page(note, root_window=root)
+    abt = about_page(master=note, root_window=root)
+
     note.add(p.as_tab(), text="Point-Of-Sale")
+    note.add(abt.as_tab(), text="About")
     note.pack(fill="both", expand=1)
 
     root.mainloop()

@@ -10,7 +10,7 @@ name = "name"
 fields = "fields"
 
 VARCHAR = "VARCHAR(50)"
-INT = "INT"
+INT = "INTEGER"
 FLOAT = "FLOAT"
 DATE = "DATE"
 
@@ -24,6 +24,11 @@ def execute_sql(sql):
     global cursor
     cursor.execute(sql)
     return cursor.fetchall()
+
+
+def close():
+    conn.commit()
+    conn.close()
 
 
 def data_dict_fmt(raw_data, fieldnames):
@@ -47,10 +52,16 @@ def create_table(table):
     global cursor
     schema_text = ""
     for column_def in table[fields]:
-        schema_text = schema_text + " ".join(column_def) + ", "
-    create_cmd = f"CREATE TABLE IF NOT EXISTS {table[name]}({schema_text})"
-    # cursor.execute(create_cmd)
+        if isinstance(column_def, str):
+            schema_text = schema_text + column_def + ", "
+        elif len(column_def) > 1:
+            schema_text = schema_text + " ".join(column_def) + ", "
+        else:
+            pass
+
+    create_cmd = f"CREATE TABLE IF NOT EXISTS {table[name]}({schema_text[:-2]})"
     print(create_cmd)
+    cursor.execute(create_cmd)
 
 
 def select_statement(table_name, cols="*", condition="*"):
@@ -65,11 +76,12 @@ def select_statement(table_name, cols="*", condition="*"):
     return data
 
 
-def insert_from_dict(name, data_dict):
+def insert_from_dict(table, data_dict):
     global cursor
     attributes = str(tuple(data_dict.keys()))
     values = str(tuple(data_dict.values()))
-    ins_cmd = "INSERT INTO {0}{1} VALUES {2}".format(name, attributes, values)
+    ins_cmd = "INSERT INTO {0}{1} VALUES {2}".format(table[name], attributes, values)
+    print(ins_cmd)
     cursor.execute(ins_cmd)
 
 
@@ -82,7 +94,6 @@ meds = {
         ("stock_quantity", INT),
         ("mrp", FLOAT),
         ("gst_percent", INT),
-        (""),
     ],
 }
 
@@ -97,22 +108,13 @@ customers = {
     ],
 }
 
-prescriptions = {
-    name: "prescs",
-    fields: [
-        ("presc_id", INT, PRIMARY_KEY, "AUTOINCREMENT"),
-        ("cust_id", INT),
-        ("doctor_name", VARCHAR),
-        ("date_of_issue", DATE),
-        (FOREIGN_KEY("cust_id", "custs", "cust_id")),
-    ],
-}
 
-txn_orders = {
-    name: "txns",
+orders = {
+    name: "orders",
     fields: [
         ("uid", INT, PRIMARY_KEY, "AUTOINCREMENT"),
-        ("o_id", INT),
+        ("cust_id", INT),
+        ("oid", INT),
         ("med_id", INT),
         ("qty", INT),
         ("txn_datetime", VARCHAR),
@@ -143,45 +145,23 @@ def add_new_medicines(data):
     insert_from_dict(meds[name], data)
 
 
-def add_presc(cust_id, doctor, medicines, date):
-    """medicines => list of tuples containing med_id and quantity"""
-
-    if execute_sql(f"SELECT * FROM {prescriptions[name]}") == []:
-        presc_id = 0000
-        insert_from_dict(
-            prescriptions[name],
-            {
-                "presc_id": presc_id,
-                "cust_id": cust_id,
-                "doctor": doctor,
-                "date_of_issue": date,
-            },
-        )
-    else:
-        prescriptions.insert_as_dict(
-            {"cust_id": cust_id, "doctor": doctor, "date_of_issue": date}
-        )
-        presc_id = execute_sql(
-            f"select top 1 presc_id from {prescriptions.name} order by presc_id"
-        )
-    for med in medicines:
-        data = {
-            "cust_id": cust_id,
-            "presc_id": presc_id,
-            "med_id": med[0],
-            "quantity": med[1],
-        }
-        insert_from_dict(txn_orders[name], data)
-
-
-
 def get_med_quantity(med_id):
     med_qty = select_statement(meds[name], "stock_quantity", f"id = {med_id}")
     med_qty = int(med_qty)
     return med_qty
 
+
 def search_by_field(table, search_attr, value):
-    data_list = list(execute_sql(f"SELECT * FROM {table[name]} WHERE {search_attr} LIKE {value}%"))
+    data_list = list(
+        execute_sql(f"SELECT * FROM {table[name]} WHERE {search_attr} LIKE '{value}%'")
+    )
+    print(data_list)
+    return data_list
+
+
+def get_table(table):
+    data_list = list(execute_sql(f"SELECT * FROM {table[name]}"))
+    print(data_list)
     return data_list
 
 
@@ -222,8 +202,14 @@ def filter_custs(name_cond, age_cond, sex_cond):
         )
 
 
+def init():
+    execute_sql("PRAGMA foreign_keys=on")
+    create_table(customers)
+    create_table(meds)
+    create_table(orders)
+
+
+init()
+
 if __name__ == "__main__":
-    pass
-
-
-conn.close()
+    conn.close()
