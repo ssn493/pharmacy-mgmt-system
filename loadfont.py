@@ -1,3 +1,11 @@
+import sys
+import os
+import shutil
+
+BASEPATH = os.getcwd()+os.path.sep
+LIN_PATH =  os.path.expanduser('~')+os.path.sep+r'.fonts'
+
+
 def loadfont_win(fontpath, private=True, enumerable=False):
     """
     Makes fonts located in file `fontpath` available to the font system.
@@ -28,3 +36,6 @@ def loadfont_win(fontpath, private=True, enumerable=False):
     flags = (FR_PRIVATE if private else 0) | (FR_NOT_ENUM if not enumerable else 0)
     numFontsAdded = AddFontResourceEx(byref(pathbuf), flags, 0)
     return bool(numFontsAdded)
+
+def loadfont_lin(fontpath):
+    shutil.copy2(fontpath, LIN_PATH)

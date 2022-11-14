@@ -125,7 +125,16 @@ class pos_page:
         #########################
         # Medicine Details Page #
         #########################
+        
         self.m = ttk.Frame(master, style="Table.TFrame")
+
+        self.sel_existing_cust_btn = ttk.Button(
+            self.c, text="Search For Medicines", style="accent.TButton"
+        )
+        self.sel_existing_cust_btn.grid(
+            row=9, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
+        )
+        self.sel_existing_cust_btn.config(command=self.sel_existing_customer)
 
         l1 = ttk.Label(self.m, text="Medicine Name", style="small.TLabel")
         l1.grid(row=0, column=0, padx=6, pady=2, sticky="sw")
@@ -200,19 +209,23 @@ class pos_page:
         self.note.pack(fill="both", expand=1, padx=10)
 
         self.n_btn = ttk.Button(
-            master=self.rootframe, text="Next >", command=lambda: next_tab(self.note)
+            master=self.rootframe,
+            text="Next >",
+            command=lambda: next_tab(self.note),
         )
-        self.n_btn.pack(side="right", anchor="se", padx=26, pady=4)
+        self.n_btn.pack(side="right", anchor="se", padx=26, pady=6)
 
         self.b_btn = ttk.Button(
-            master=self.rootframe, text="< Back", command=lambda: prev_tab(self.note)
+            master=self.rootframe,
+            text="< Back",
+            command=lambda: prev_tab(self.note),
         )
-        self.b_btn.pack(side="left", anchor="sw", padx=26, pady=4)
+        self.b_btn.pack(side="left", anchor="sw", padx=26, pady=6)
 
         self.rootframe.pack(fill="both", expand=1)
 
     def sel_existing_customer(self):
-        search_attr = "name"
+        search_attr = "Name"
 
         main = tk.Toplevel()
         main.title("Select Existing Customer")
@@ -433,10 +446,10 @@ if __name__ == "__main__":
 
     s = style(root)
 
-    note = ttk.Notebook(root, style="ribbon.TNotebook")
+    note = VerticalNavMenu(root, menu_button=True)
 
-    p = pos_page(note, root_window=root)
-    abt = about_page(master=note, root_window=root)
+    p = pos_page(note.content_frame, root_window=root)
+    abt = about_page(master=note.content_frame, root_window=root)
 
     note.add(p.as_tab(), text="Point-Of-Sale")
     note.add(abt.as_tab(), text="About")

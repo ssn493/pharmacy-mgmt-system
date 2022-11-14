@@ -60,7 +60,6 @@ def create_table(table):
             pass
 
     create_cmd = f"CREATE TABLE IF NOT EXISTS {table[name]}({schema_text[:-2]})"
-    print(create_cmd)
     cursor.execute(create_cmd)
 
 

@@ -3,14 +3,15 @@ from tkinter import ttk
 
 colorscheme = {
     "dark": "#0f1012",
-    "darkh": "#1c1d22",
-    "grey": "#22242a",
-    "lightgrey": "#e4e0dd",
-    "light": "#fffeff",
-    "lighth": "#f6f2f6",
-    "accent": "#ff6376",
-    "accenth": "#fa5972",
-    "hover": "#fad4da",
+    "darkh": "#22242a",
+    "grey": "#4c494a",
+    "lightgrey": "#d8dada",
+    # "lightgrey": "#dfe2e7",
+    "light": "#fffefe",
+    "lighth": "#f1f3f3",
+    "accent": "#fc6373",
+    "accenth": "#fc5976",
+    "hover": "#d8dada",
 }
 
 
@@ -39,6 +40,17 @@ def style(root):
         borderwidth=2,
         # relief=tk.FLAT,
     )
+    style.map(
+        "TButton",
+        background=[
+            ("active", colorscheme["lighth"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        lightcolor=[("pressed", colorscheme["dark"])],
+        darkcolor=[("pressed", colorscheme["dark"])],
+        bordercolor=[("pressed", colorscheme["grey"])],
+        focuscolor=[("pressed", colorscheme["light"])],
+    )
     style.configure(
         "accent.TButton",
         background=colorscheme["accent"],
@@ -51,17 +63,6 @@ def style(root):
         font=header,
     )
     style.map(
-        "TButton",
-        background=[
-            ("active", colorscheme["lighth"]),
-            ("disabled", colorscheme["lightgrey"]),
-        ],
-        lightcolor=[("pressed", colorscheme["darkh"])],
-        darkcolor=[("pressed", colorscheme["darkh"])],
-        bordercolor=[("pressed", colorscheme["light"])],
-        focuscolor=[("pressed", colorscheme["light"])],
-    )
-    style.map(
         "accent.TButton",
         background=[
             ("active", colorscheme["accenth"]),
@@ -72,7 +73,57 @@ def style(root):
         focuscolor=[("pressed", colorscheme["accent"])],
         bordercolor=[("pressed", colorscheme["dark"])],
     )
-
+    style.configure(
+        "dark.TButton",
+        foreground=colorscheme["light"],
+        background=colorscheme["dark"],
+        lightcolor=colorscheme["dark"],
+        darkcolor=colorscheme["dark"],
+        bordercolor=colorscheme["dark"],
+        focuscolor=colorscheme["darkh"],
+        borderwidth=2,
+        padding=(6, 2),
+        font=header,
+    )
+    style.map(
+        "dark.TButton",
+        background=[
+            ("active", colorscheme["darkh"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        foreground=[
+            ("disabled", colorscheme["lighth"]),
+        ],
+        lightcolor=[("pressed", colorscheme["darkh"])],
+        darkcolor=[("pressed", colorscheme["darkh"])],
+        focuscolor=[("pressed", colorscheme["darkh"])],
+        bordercolor=[("pressed", colorscheme["darkh"])],
+    )
+    style.configure(
+        "menubtn.TButton",
+        borderwidth=0,
+        bordercolor=colorscheme["light"],
+        foreground=colorscheme["light"],
+        background=colorscheme["dark"],
+        lightcolor=colorscheme["dark"],
+        darkcolor=colorscheme["dark"],
+        focuscolor=colorscheme["darkh"],
+    )
+    style.map(
+        "menubtn.TButton",
+        background=[
+            ("active", colorscheme["grey"]),
+            ("pressed", colorscheme["grey"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        foreground=[
+            ("disabled", colorscheme["lighth"]),
+        ],
+        lightcolor=[("pressed", colorscheme["darkh"])],
+        darkcolor=[("pressed", colorscheme["darkh"])],
+        focuscolor=[("pressed", colorscheme["darkh"])],
+        bordercolor=[("pressed", colorscheme["darkh"])],
+    )
     style.configure(
         "TLabel",
         foreground=colorscheme["dark"],
@@ -284,7 +335,83 @@ def style(root):
         relief="flat",
         font=font,
     )
-    print(style.layout("TFrame"))
+    style.configure(
+        "Treeview",
+        background=colorscheme["light"],
+        fieldbackground=colorscheme["lighth"],
+        bordercolor=colorscheme["grey"],
+    )
+
+    style.configure(
+        "menubtn.TButton",
+        borderwidth=0,
+        bordercolor=colorscheme["light"],
+        foreground=colorscheme["light"],
+        background=colorscheme["dark"],
+        lightcolor=colorscheme["dark"],
+        darkcolor=colorscheme["dark"],
+        focuscolor=colorscheme["darkh"],
+    )
+    style.map(
+        "menubtn.TButton",
+        background=[
+            ("active", colorscheme["grey"]),
+            ("pressed", colorscheme["grey"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        foreground=[
+            ("disabled", colorscheme["lighth"]),
+        ],
+        lightcolor=[("pressed", colorscheme["grey"])],
+        darkcolor=[("pressed", colorscheme["grey"])],
+        focuscolor=[("pressed", colorscheme["grey"])],
+        bordercolor=[("pressed", colorscheme["grey"])],
+    )
+
+    style.configure(
+        "verticalNavMenu.TButton",
+        background=colorscheme["lightgrey"],
+        foreground=colorscheme["dark"],
+        darkcolor=colorscheme["lightgrey"],
+        lightcolor=colorscheme["lightgrey"],
+        bordercolor=colorscheme["lightgrey"],
+        focusthickness=0,
+        borderwidth=2,
+        # relief=tk.FLAT,
+    )
+    style.map(
+        "verticalNavMenu.TButton",
+        background=[
+            ("active", colorscheme["lighth"]),
+            ("disabled", colorscheme["lightgrey"]),
+            ("pressed", colorscheme["light"]),
+        ],
+        lightcolor=[
+            ("pressed", colorscheme["light"]),
+            ("active", colorscheme["light"]),
+        ],
+        darkcolor=[
+            ("pressed", colorscheme["light"]),
+            ("active", colorscheme["light"]),
+        ],
+        bordercolor=[
+            ("pressed", colorscheme["light"]),
+            ("active", colorscheme["light"]),
+        ],
+        focuscolor=[
+            ("pressed", colorscheme["lighth"]),
+            ("active", colorscheme["light"]),
+        ],
+    )
+    style.configure(
+        "verticalNavMenu.TFrame",
+        background=colorscheme["lightgrey"],
+        lightcolor=colorscheme["lightgrey"],
+        darkcolor=colorscheme["lightgrey"],
+        bordercolor=colorscheme["grey"],
+        highlightcolor=colorscheme["grey"],
+        borderwidth=2,
+    )
 
     return style
 
@@ -292,6 +419,6 @@ def style(root):
 if __name__ == "__main__":
     root = tk.Tk()
     s = style(root)
-    print(s.element_options("TFrame.border"))
+    print(s.element_options("Treeview.field"))
 
     root.mainloop()
