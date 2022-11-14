@@ -15,38 +15,98 @@ from theme import style
 from ui_utils import *
 
 
-class treeview_toplevel:
-    def __init__(self):
-        self.main = tk.Toplevel()
-        self.main.title("Insert Selected Data")
-        self.rootframe = ttk.Frame(self.main)
-        self.tv = ttk.Treeview(master=self.rootframe)
+class login_page:
+    def __init__(self, root):
+        self.rootframe = ttk.Frame(root)
+        self.rootframe.pack(fill="both", expand=1)
+        grid_config(self.rootframe)
+        self.rootframe.grid_rowconfigure(0, weight=1)
 
-        self.search_textvar = tk.StringVar()
+        self.register_user_page = ttk.Frame(self.rootframe)
+        self.register_user_page.grid(row=0, column=0, columnspan=4, sticky="nswe")
+        grid_config(self.register_user_page)
 
-        self.search_cont = ttk.Frame(self.rootframe)
-        self.search_field = ttk.Entry(
-            self.search_cont, textvariable=self.search_textvar, name="search"
+        self.login_user_page = ttk.Frame(self.rootframe)
+        self.login_user_page.grid(row=1, column=0, columnspan=4, sticky="nswe")
+        grid_config(self.login_user_page)
+
+        self.cust_reg_lbl = ttk.Label(
+            self.register_user_page, text="Register New Customer", style="big.TLabel"
         )
-        self.search_btn = ttk.Button(self.search_cont, text="Search")
-        self.sel_btn = ttk.Button(
-            master=self.rootframe, text="Insert Selected Data", style="accent.TButton"
+        self.cust_reg_lbl.grid(
+            row=0, column=0, columnspan=8, padx=6, pady=2, sticky="ew"
         )
-        self.main.withdraw()
 
-    def config_behaviour(self, sel_cmd, search_cmd, search_field_text="Enter name"):
-        self.sel_btn.config(command=sel_cmd)
-        self.search_btn.config(command=search_cmd)
-        self.search_field.config(name=search_field_text)
+        l1 = ttk.Label(
+            self.register_user_page, text="Customer Name", style="small.TLabel"
+        )
+        l1.grid(row=1, column=0, padx=6, pady=2, sticky="sw")
 
-    def run(self):
-        self.rootframe.pack(fill="both", expand=1, ipadx=6, ipady=6)
-        self.tv.pack(fill="both", expand=2, padx=6, pady=4)
-        self.search_cont.pack(fill="x", expand=1)
-        self.search_btn.pack(side="left", padx=6, pady=4)
-        self.search_field.pack(side="right", fill="x", expand=1, padx=6, pady=4)
-        self.sel_btn.pack(fill="x", expand=1, padx=6, pady=4, anchor="s")
-        self.main.deiconify()
+        self.cust_name_entry = ttk.Entry(self.register_user_page)
+        self.cust_name_entry.grid(
+            row=2, column=0, padx=6, pady=2, columnspan=8, sticky="ew"
+        )
+
+        l2 = ttk.Label(self.register_user_page, text="Password", style="small.TLabel")
+        l2.grid(row=3, column=0, padx=6, pady=2, sticky="sw")
+
+        self.cust_pswd_entry = ttk.Entry(self.register_user_page, show="*")
+        self.cust_pswd_entry.grid(
+            row=4, column=0, padx=6, pady=2, columnspan=6, sticky="ew"
+        )
+        self.shown_pswd = False
+        self.show_pswd_btn = ttk.Button(
+            self.register_user_page,
+            text="Show Password",
+            command=lambda: self.show_pswd(self.cust_pswd_entry, self.shown_pswd),
+        )
+        self.show_pswd_btn.grid(
+            row=4, column=6, columnspan=2, padx=6, pady=2, sticky="sew"
+        )
+
+        l3 = ttk.Label(self.register_user_page, text="Age", style="small.TLabel")
+        l3.grid(row=5, column=0, padx=6, pady=2, sticky="sw")
+
+        self.cust_age_entry = ttk.Entry(self.register_user_page)
+        self.cust_age_entry.grid(
+            row=6, column=0, padx=6, pady=2, columnspan=3, sticky="ew"
+        )
+
+        l4 = ttk.Label(self.register_user_page, text="Sex", style="small.TLabel")
+        l4.grid(row=5, column=4, padx=6, pady=2, sticky="sw")
+
+        self.cust_sex_entry = ttk.Entry(self.register_user_page)
+        self.cust_sex_entry.grid(
+            row=6, column=4, padx=6, pady=2, columnspan=4, sticky="ew"
+        )
+
+        l5 = ttk.Label(self.register_user_page, text="Address", style="small.TLabel")
+        l5.grid(row=7, column=0, padx=6, pady=2, sticky="sw")
+
+        self.cust_addr_entry = ttk.Entry(self.register_user_page)
+        self.cust_addr_entry.grid(
+            row=8, column=0, padx=6, pady=2, columnspan=8, sticky="ew"
+        )
+
+        self.reg_new_cust_btn = ttk.Button(
+            self.register_user_page,
+            text="Register New Customer",
+            style="accent.TButton",
+        )
+        self.reg_new_cust_btn.grid(
+            row=9, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
+        )
+
+    def show_pswd(self, widget, flag):
+        if not flag:
+            widget["show"] = ""
+            flag = True
+        else:
+            widget["show"] = ("*",)
+            flag = False
+
+    def as_frame(self):
+        return self.rootframe
 
 
 class pos_page:
@@ -61,75 +121,75 @@ class pos_page:
             self.note,
         )
 
-        self.cust_reg_lbl = ttk.Label(
-            self.c, text="Register New Customer", style="big.TLabel"
-        )
-        self.cust_reg_lbl.grid(
-            row=0, column=0, columnspan=8, padx=6, pady=2, sticky="ew"
-        )
+        # self.cust_reg_lbl = ttk.Label(
+        #     self.c, text="Register New Customer", style="big.TLabel"
+        # )
+        # self.cust_reg_lbl.grid(
+        #     row=0, column=0, columnspan=8, padx=6, pady=2, sticky="ew"
+        # )
 
-        l1 = ttk.Label(self.c, text="Customer Name", style="small.TLabel")
-        l1.grid(row=1, column=0, padx=6, pady=2, sticky="sw")
+        # l1 = ttk.Label(self.c, text="Customer Name", style="small.TLabel")
+        # l1.grid(row=1, column=0, padx=6, pady=2, sticky="sw")
 
-        self.cust_name_entry = ttk.Entry(self.c)
-        self.cust_name_entry.grid(
-            row=2, column=0, padx=6, pady=2, columnspan=8, sticky="ew"
-        )
+        # self.cust_name_entry = ttk.Entry(self.c)
+        # self.cust_name_entry.grid(
+        #     row=2, column=0, padx=6, pady=2, columnspan=8, sticky="ew"
+        # )
 
-        l2 = ttk.Label(self.c, text="Age", style="small.TLabel")
-        l2.grid(row=3, column=0, padx=6, pady=2, sticky="sw")
+        # l2 = ttk.Label(self.c, text="Age", style="small.TLabel")
+        # l2.grid(row=3, column=0, padx=6, pady=2, sticky="sw")
 
-        self.cust_age_entry = ttk.Entry(self.c)
-        self.cust_age_entry.grid(
-            row=4, column=0, padx=6, pady=2, columnspan=3, sticky="ew"
-        )
+        # self.cust_age_entry = ttk.Entry(self.c)
+        # self.cust_age_entry.grid(
+        #     row=4, column=0, padx=6, pady=2, columnspan=3, sticky="ew"
+        # )
 
-        l3 = ttk.Label(self.c, text="Sex", style="small.TLabel")
-        l3.grid(row=3, column=4, padx=6, pady=2, sticky="sw")
+        # l3 = ttk.Label(self.c, text="Sex", style="small.TLabel")
+        # l3.grid(row=3, column=4, padx=6, pady=2, sticky="sw")
 
-        self.cust_sex_entry = ttk.Entry(self.c)
-        self.cust_sex_entry.grid(
-            row=4, column=4, padx=6, pady=2, columnspan=4, sticky="ew"
-        )
+        # self.cust_sex_entry = ttk.Entry(self.c)
+        # self.cust_sex_entry.grid(
+        #     row=4, column=4, padx=6, pady=2, columnspan=4, sticky="ew"
+        # )
 
-        l4 = ttk.Label(self.c, text="Address", style="small.TLabel")
-        l4.grid(row=5, column=0, padx=6, pady=2, sticky="sw")
+        # l4 = ttk.Label(self.c, text="Address", style="small.TLabel")
+        # l4.grid(row=5, column=0, padx=6, pady=2, sticky="sw")
 
-        self.cust_addr_entry = ttk.Entry(self.c)
-        self.cust_addr_entry.grid(
-            row=6, column=0, padx=6, pady=2, columnspan=8, sticky="ew"
-        )
+        # self.cust_addr_entry = ttk.Entry(self.c)
+        # self.cust_addr_entry.grid(
+        #     row=6, column=0, padx=6, pady=2, columnspan=8, sticky="ew"
+        # )
 
-        self.reg_new_cust_btn = ttk.Button(
-            self.c,
-            text="Register New Customer",
-            style="accent.TButton",
-            command=self.reg_new_cust,
-        )
-        self.reg_new_cust_btn.grid(
-            row=7, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
-        )
+        # self.reg_new_cust_btn = ttk.Button(
+        #     self.c,
+        #     text="Register New Customer",
+        #     style="accent.TButton",
+        #     command=self.reg_new_cust,
+        # )
+        # self.reg_new_cust_btn.grid(
+        #     row=7, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
+        # )
 
-        l5 = ttk.Label(self.c, text="or", style="big.TLabel")
-        l5.grid(row=8, column=0, columnspan=8, padx=6, pady=2, sticky="ew")
+        # l5 = ttk.Label(self.c, text="or", style="big.TLabel")
+        # l5.grid(row=8, column=0, columnspan=8, padx=6, pady=2, sticky="ew")
 
-        self.sel_existing_cust_btn = ttk.Button(
-            self.c, text="Select Existing Customer", style="accent.TButton"
-        )
-        self.sel_existing_cust_btn.grid(
-            row=9, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
-        )
-        self.sel_existing_cust_btn.config(command=self.sel_existing_customer)
+        # self.sel_existing_cust_btn = ttk.Button(
+        #     self.c, text="Select Existing Customer", style="accent.TButton"
+        # )
+        # self.sel_existing_cust_btn.grid(
+        #     row=9, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
+        # )
+        # self.sel_existing_cust_btn.config(command=self.sel_existing_customer)
         grid_config(self.c)
 
         #########################
         # Medicine Details Page #
         #########################
-        
+
         self.m = ttk.Frame(master, style="Table.TFrame")
 
         self.sel_existing_cust_btn = ttk.Button(
-            self.c, text="Search For Medicines", style="accent.TButton"
+            self.m, text="Search For Medicines", style="accent.TButton"
         )
         self.sel_existing_cust_btn.grid(
             row=9, column=0, columnspan=8, padx=6, pady=6, sticky="sew"
@@ -445,6 +505,7 @@ if __name__ == "__main__":
     root = tk.Tk()
 
     s = style(root)
+    # a = login_page(root)
 
     note = VerticalNavMenu(root, menu_button=True)
 
@@ -453,6 +514,7 @@ if __name__ == "__main__":
 
     note.add(p.as_tab(), text="Point-Of-Sale")
     note.add(abt.as_tab(), text="About")
+    note.add(ttk.Frame(), text='Quit', custom_cmd=abt.quit_app)
     note.pack(fill="both", expand=1)
 
     root.mainloop()

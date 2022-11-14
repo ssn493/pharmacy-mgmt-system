@@ -153,7 +153,7 @@ class VerticalNavMenu:
             if self.menu_button_flag:
                 self.toggle_menu()
 
-    def add(self, frame, text=None):
+    def add(self, frame, text=None, custom_cmd=None):
         if not isinstance(text, str):
             raise Exception("Entered text is not valid")
 
@@ -170,9 +170,12 @@ class VerticalNavMenu:
         menu_btn = ttk.Button(
             self.menu_frame,
             text=text,
-            command=lambda: self.show_frame(frame_index),
             style="verticalNavMenu.TButton",
         )
+        if custom_cmd == None:
+            menu_btn.config(command=lambda: self.show_frame(frame_index))
+        else:
+            menu_btn.config(command=custom_cmd)
         menu_btn.pack(fill="x", padx=0, ipadx=4, pady=0, ipady=4)
         self.menu_btn_widgets.append(menu_btn)
 

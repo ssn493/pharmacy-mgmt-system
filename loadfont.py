@@ -5,6 +5,7 @@ import shutil
 BASEPATH = os.getcwd()+os.path.sep
 LIN_PATH =  os.path.expanduser('~')+os.path.sep+r'.fonts'
 
+loaded_fonts_lin = []
 
 def loadfont_win(fontpath, private=True, enumerable=False):
     """
@@ -38,4 +39,12 @@ def loadfont_win(fontpath, private=True, enumerable=False):
     return bool(numFontsAdded)
 
 def loadfont_lin(fontpath):
+    path, filename, os.path.split(fontpath)
     shutil.copy2(fontpath, LIN_PATH)
+    global loaded_fonts_lin
+    loaded_fonts_lin.append(filename)
+
+def removefont_lin(filename):
+    global loaded_fonts_lin
+    if filename in loaded_fonts_lin and os.path.isfile(LIN_PATH+os.path.sep+filename):
+        os.remove(LIN_PATH+os.path.sep+filename)

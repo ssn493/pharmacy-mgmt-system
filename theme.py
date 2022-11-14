@@ -10,8 +10,8 @@ colorscheme = {
     "light": "#fffefe",
     "lighth": "#f1f3f3",
     "accent": "#fc6373",
-    "accenth": "#fc5976",
-    "hover": "#d8dada",
+    "accenth": "#fe5976",
+    "hover": "#fea9cc",
 }
 
 
@@ -43,11 +43,12 @@ def style(root):
     style.map(
         "TButton",
         background=[
+            ("pressed", colorscheme["light"]),
             ("active", colorscheme["lighth"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
-        lightcolor=[("pressed", colorscheme["dark"])],
-        darkcolor=[("pressed", colorscheme["dark"])],
+        lightcolor=[("pressed", colorscheme["lighth"])],
+        darkcolor=[("pressed", colorscheme["lighth"])],
         bordercolor=[("pressed", colorscheme["grey"])],
         focuscolor=[("pressed", colorscheme["light"])],
     )
@@ -65,11 +66,12 @@ def style(root):
     style.map(
         "accent.TButton",
         background=[
+            ("pressed", colorscheme["accent"]),
             ("active", colorscheme["accenth"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
-        lightcolor=[("pressed", colorscheme["darkh"])],
-        darkcolor=[("pressed", colorscheme["darkh"])],
+        lightcolor=[("pressed", colorscheme["accenth"])],
+        darkcolor=[("pressed", colorscheme["accenth"])],
         focuscolor=[("pressed", colorscheme["accent"])],
         bordercolor=[("pressed", colorscheme["dark"])],
     )
@@ -88,6 +90,7 @@ def style(root):
     style.map(
         "dark.TButton",
         background=[
+            ("pressed", colorscheme["dark"]),
             ("active", colorscheme["darkh"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
@@ -99,31 +102,7 @@ def style(root):
         focuscolor=[("pressed", colorscheme["darkh"])],
         bordercolor=[("pressed", colorscheme["darkh"])],
     )
-    style.configure(
-        "menubtn.TButton",
-        borderwidth=0,
-        bordercolor=colorscheme["light"],
-        foreground=colorscheme["light"],
-        background=colorscheme["dark"],
-        lightcolor=colorscheme["dark"],
-        darkcolor=colorscheme["dark"],
-        focuscolor=colorscheme["darkh"],
-    )
-    style.map(
-        "menubtn.TButton",
-        background=[
-            ("active", colorscheme["grey"]),
-            ("pressed", colorscheme["grey"]),
-            ("disabled", colorscheme["lightgrey"]),
-        ],
-        foreground=[
-            ("disabled", colorscheme["lighth"]),
-        ],
-        lightcolor=[("pressed", colorscheme["darkh"])],
-        darkcolor=[("pressed", colorscheme["darkh"])],
-        focuscolor=[("pressed", colorscheme["darkh"])],
-        bordercolor=[("pressed", colorscheme["darkh"])],
-    )
+
     style.configure(
         "TLabel",
         foreground=colorscheme["dark"],
@@ -388,15 +367,15 @@ def style(root):
         ],
         lightcolor=[
             ("pressed", colorscheme["light"]),
-            ("active", colorscheme["light"]),
+            ("active", colorscheme["lighth"]),
         ],
         darkcolor=[
             ("pressed", colorscheme["light"]),
-            ("active", colorscheme["light"]),
+            ("active", colorscheme["lighth"]),
         ],
         bordercolor=[
             ("pressed", colorscheme["light"]),
-            ("active", colorscheme["light"]),
+            ("active", colorscheme["lighth"]),
         ],
         focuscolor=[
             ("pressed", colorscheme["lighth"]),
