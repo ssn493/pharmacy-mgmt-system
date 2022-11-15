@@ -115,7 +115,7 @@ orders = {
         ("med_id", INT),
         ("qty", INT),
         ("txn_date", VARCHAR),
-        ("PRIMARY KEY (oredr_id, cust_id, med_id)"),
+        ("PRIMARY KEY (order_id, cust_id, med_id)"),
         (
             FOREIGN_KEY("med_id", meds[name], "id"),
             "ON DELETE CASCADE ON UPDATE NO ACTION",
@@ -210,10 +210,19 @@ def filter_custs(name_cond, age_cond, sex_cond):
 def create_new_order(cust_id, medicine_data, txn_date):
     if execute_sql(f'SELECT * FROM {orders[name]}') == []:
         order_id = 0000
-        for data_item in medicine_data:
-            med_id, qty = data_item
-            execute_sql(f'INSERT INTO {orders[name]} VALUES ({order_id}, {cust_id}, {med_id}, {qty}, {txn_date})')
+    else:
+        order_id=f'(SELECT MAX(order_id)+1 FROM {orders[name]})'    
+    for data_item in medicine_data:
+        med_id, qty = data_item
+        execute_sql(f'INSERT INTO {orders[name]} VALUES ({order_id}, {cust_id}, {med_id}, {qty}, {txn_date})')
 
+def show_past_orders(cust_id):
+    order_list = execute_sql(f'SELECT DISTINCT order_id FROM {orders[name]} WHERE cust_id={cust_id}')
+    return order_list
+
+def show_order_details(order_id):
+    medicine_details = execute_sql(f'SELECT {meds[name]}.name, {orders[name]}.qty FROM {meds[name]},{orders[name]} WHERE {meds[name]}.id={orders[name]}.med_id AND {orders[name]}.order_id={order_id}')
+    return list(medicine_details)
 
 def init():
     execute_sql("PRAGMA foreign_keys=on")

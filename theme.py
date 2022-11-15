@@ -3,16 +3,16 @@ from tkinter import ttk
 
 colorscheme = {
     "dark": "#0f1012",
-    "darkh": "#22242a",
-    "grey": "#4c494a",
-    "lightgrey": "#d8dada",
+    "darkh": "#343333",
+    "grey": "#535757",
+    "lightgrey": "#d8dadb",
     # "lightgrey": "#dfe2e7",
     "light": "#fffefe",
-    "lighth": "#f1f3f3",
+    "lighth": "#ececee",
     "accent": "#fc6373",
-    "accenth": "#ff5577",
-    "hover": "#dfe2e7",
-    "ahover": "#fc647e",
+    "accenth": "#ff5877",
+    "hl": "#e2e4e4",
+    "ahl": "#ff6884",
 }
 
 
@@ -32,26 +32,34 @@ def style(root):
     style.configure(
         "TButton",
         background=colorscheme["light"],
-        lightcolor=colorscheme["lightgrey"],
-        darkcolor=colorscheme["lightgrey"],
+        lightcolor=colorscheme["light"],
+        darkcolor=colorscheme["light"],
         foreground=colorscheme["dark"],
         bordercolor=colorscheme["dark"],
-        focuscolor=colorscheme["light"],
+        focuscolor=colorscheme["lighth"],
         focusthickness=1,
         borderwidth=2,
-        # relief=tk.FLAT,
     )
     style.map(
         "TButton",
         background=[
-            ("pressed", colorscheme["hover"]),
+            ("pressed", colorscheme["hl"]),
             ("active", colorscheme["lighth"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
-        lightcolor=[("pressed", colorscheme["lighth"])],
-        darkcolor=[("pressed", colorscheme["lighth"])],
-        bordercolor=[("pressed", colorscheme["grey"])],
-        focuscolor=[("pressed", colorscheme["light"])],
+        lightcolor=[
+            ("active", colorscheme["lighth"]),
+            ("pressed", colorscheme["lighth"]),
+        ],
+        darkcolor=[
+            ("active", colorscheme["lighth"]),
+            ("pressed", colorscheme["lighth"]),
+        ],
+        bordercolor=[
+            ("active", colorscheme["darkh"]),
+            ("pressed", colorscheme["lighth"]),
+        ],
+        focuscolor=[("pressed", colorscheme["lighth"])],
     )
     style.configure(
         "accent.TButton",
@@ -67,7 +75,7 @@ def style(root):
     style.map(
         "accent.TButton",
         background=[
-            ("pressed", colorscheme["ahover"]),
+            ("pressed", colorscheme["ahl"]),
             ("active", colorscheme["accenth"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
@@ -146,7 +154,7 @@ def style(root):
         lightcolor=colorscheme["light"],
         darkcolor=colorscheme["light"],
         bordercolor=colorscheme["light"],
-        width=3
+        width=3,
     )
 
     style.configure(
@@ -329,7 +337,7 @@ def style(root):
         background=colorscheme["light"],
         fieldbackground=colorscheme["lighth"],
         bordercolor=colorscheme["grey"],
-        font=font
+        font=font,
     )
 
     style.configure(
@@ -345,8 +353,8 @@ def style(root):
     style.map(
         "menubtn.TButton",
         background=[
-            ("active", colorscheme["grey"]),
-            ("pressed", colorscheme["grey"]),
+            ("pressed", colorscheme["dark"]),
+            ("active", colorscheme["darkh"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
         foreground=[
@@ -367,7 +375,6 @@ def style(root):
         bordercolor=colorscheme["lightgrey"],
         focusthickness=0,
         borderwidth=2,
-        # relief=tk.FLAT,
     )
     style.map(
         "verticalNavMenu.TButton",
@@ -377,20 +384,20 @@ def style(root):
             ("pressed", colorscheme["light"]),
         ],
         lightcolor=[
-            ("pressed", colorscheme["light"]),
             ("active", colorscheme["lighth"]),
+            ("pressed", colorscheme["light"]),
         ],
         darkcolor=[
-            ("pressed", colorscheme["light"]),
             ("active", colorscheme["lighth"]),
+            ("pressed", colorscheme["light"]),
         ],
         bordercolor=[
-            ("pressed", colorscheme["light"]),
             ("active", colorscheme["lighth"]),
+            ("pressed", colorscheme["light"]),
         ],
         focuscolor=[
+            ("active", colorscheme["lighth"]),
             ("pressed", colorscheme["lighth"]),
-            ("active", colorscheme["light"]),
         ],
     )
     style.configure(

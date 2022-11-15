@@ -155,74 +155,6 @@ class pos_page:
         self.note = ttk.Notebook(self.rootframe)
 
         #########################
-        # Customer Details Page #
-        #########################
-        self.c = ttk.Frame(
-            self.note,
-        )
-
-        # self.cust_reg_lbl = ttk.Label(
-        #     self.c, text="Register New Customer", style="big.TLabel"
-        # )
-        # self.cust_reg_lbl.grid(
-        #     row=0, column=0, columnspan=8, padx=10, pady=2, sticky="ew"
-        # )
-
-        # l1 = ttk.Label(self.c, text="Customer Name", style="small.TLabel")
-        # l1.grid(row=1, column=0, padx=10, pady=2, sticky="sw")
-
-        # self.cust_name_entry = ttk.Entry(self.c)
-        # self.cust_name_entry.grid(
-        #     row=2, column=0, padx=10, pady=2, columnspan=8, sticky="ew"
-        # )
-
-        # l2 = ttk.Label(self.c, text="Age", style="small.TLabel")
-        # l2.grid(row=3, column=0, padx=10, pady=2, sticky="sw")
-
-        # self.cust_age_entry = ttk.Entry(self.c)
-        # self.cust_age_entry.grid(
-        #     row=4, column=0, padx=10, pady=2, columnspan=3, sticky="ew"
-        # )
-
-        # l3 = ttk.Label(self.c, text="Sex", style="small.TLabel")
-        # l3.grid(row=3, column=4, padx=10, pady=2, sticky="sw")
-
-        # self.cust_sex_entry = ttk.Entry(self.c)
-        # self.cust_sex_entry.grid(
-        #     row=4, column=4, padx=10, pady=2, columnspan=4, sticky="ew"
-        # )
-
-        # l4 = ttk.Label(self.c, text="Address", style="small.TLabel")
-        # l4.grid(row=5, column=0, padx=10, pady=2, sticky="sw")
-
-        # self.cust_addr_entry = ttk.Entry(self.c)
-        # self.cust_addr_entry.grid(
-        #     row=6, column=0, padx=10, pady=2, columnspan=8, sticky="ew"
-        # )
-
-        # self.new_cust_reg_btn = ttk.Button(
-        #     self.c,
-        #     text="Register New Customer",
-        #     style="accent.TButton",
-        #     command=self.reg_new_cust,
-        # )
-        # self.new_cust_reg_btn.grid(
-        #     row=7, column=0, columnspan=8, padx=10, pady=6, sticky="sew"
-        # )
-
-        # l5 = ttk.Label(self.c, text="or", style="big.TLabel")
-        # l5.grid(row=8, column=0, columnspan=8, padx=10, pady=2, sticky="ew")
-
-        # self.sel_existing_cust_btn = ttk.Button(
-        #     self.c, text="Select Existing Customer", style="accent.TButton"
-        # )
-        # self.sel_existing_cust_btn.grid(
-        #     row=9, column=0, columnspan=8, padx=10, pady=6, sticky="sew"
-        # )
-        # self.sel_existing_cust_btn.config(command=self.sel_existing_customer)
-        grid_config(self.c)
-
-        #########################
         # Medicine Details Page #
         #########################
 
@@ -386,7 +318,7 @@ class pos_page:
         return self.rootframe
 
 
-class inventory_page:
+class past_orders_page:
     def __init__(self, master):
         self.rootframe = ttk.Frame(master)
         self.note = ttk.Notebook(self.rootframe)
