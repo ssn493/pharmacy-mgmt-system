@@ -462,7 +462,7 @@ class about_page:
         l0.pack(padx=20, pady=15, anchor="n", expand=1)
         l1 = ttk.Label(
             self.rootframe,
-            text="Made by Subhrojyoti Sen and an unnamed intern at Bajaj Finserv and HRC.",
+            text="Made by Subhrojyoti Sen and an unnamed .",
         )
         l1.pack(padx=20, pady=5, anchor="n", expand=1)
         l2 = ttk.Label(
