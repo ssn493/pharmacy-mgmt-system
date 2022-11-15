@@ -10,8 +10,9 @@ colorscheme = {
     "light": "#fffefe",
     "lighth": "#f1f3f3",
     "accent": "#fc6373",
-    "accenth": "#fe5976",
-    "hover": "#fea9cc",
+    "accenth": "#ff5577",
+    "hover": "#dfe2e7",
+    "ahover": "#fc647e",
 }
 
 
@@ -43,7 +44,7 @@ def style(root):
     style.map(
         "TButton",
         background=[
-            ("pressed", colorscheme["light"]),
+            ("pressed", colorscheme["hover"]),
             ("active", colorscheme["lighth"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
@@ -66,7 +67,7 @@ def style(root):
     style.map(
         "accent.TButton",
         background=[
-            ("pressed", colorscheme["accent"]),
+            ("pressed", colorscheme["ahover"]),
             ("active", colorscheme["accenth"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
@@ -137,6 +138,15 @@ def style(root):
     style.configure(
         "border.TFrame.border",
         borderwidth=2,
+        bordercolor=colorscheme["dark"],
+    )
+    style.configure(
+        "hr.TFrame",
+        background=colorscheme["grey"],
+        lightcolor=colorscheme["light"],
+        darkcolor=colorscheme["light"],
+        bordercolor=colorscheme["light"],
+        width=3
     )
 
     style.configure(
@@ -319,6 +329,7 @@ def style(root):
         background=colorscheme["light"],
         fieldbackground=colorscheme["lighth"],
         bordercolor=colorscheme["grey"],
+        font=font
     )
 
     style.configure(
@@ -398,6 +409,6 @@ def style(root):
 if __name__ == "__main__":
     root = tk.Tk()
     s = style(root)
-    print(s.element_options("Treeview.field"))
+    print(s.layout("Treeview.Heading"))
 
     root.mainloop()

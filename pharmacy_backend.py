@@ -70,8 +70,7 @@ def select_statement(table_name, cols="*", condition="*"):
     else:
         sel_cmd = f"SELECT {cols} FROM {table_name} WHERE {condition}"
     cursor.execute(sel_cmd)
-    raw_data = cursor.fetchall()
-    data = data_dict_fmt(raw_data)
+    data = cursor.fetchall()
     return data
 
 
@@ -104,20 +103,27 @@ customers = {
         ("age", INT),
         ("sex", VARCHAR),
         ("address", VARCHAR),
+        ("password", VARCHAR),
     ],
 }
-
 
 orders = {
     name: "orders",
     fields: [
-        ("uid", INT, PRIMARY_KEY, "AUTOINCREMENT"),
+        ("order_id", INT, "NOT NULL", "UNIQUE",),
         ("cust_id", INT),
-        ("oid", INT),
         ("med_id", INT),
         ("qty", INT),
-        ("txn_datetime", VARCHAR),
-        (FOREIGN_KEY("med_id", meds[name], "id")),
+        ("txn_date", VARCHAR),
+        ("PRIMARY KEY (oredr_id, cust_id, med_id)"),
+        (
+            FOREIGN_KEY("med_id", meds[name], "id"),
+            "ON DELETE CASCADE ON UPDATE NO ACTION",
+        ),
+        (
+            FOREIGN_KEY("cust_id", customers[name], "cust_id"),
+            "ON DELETE CASCADE ON UPDATE NO ACTION",
+        ),
     ],
 }
 
@@ -164,7 +170,7 @@ def get_table(table):
     return data_list
 
 
-def search_meds(medicine_name):
+def search_med_by_name(medicine_name):
     med_list = execute_sql(f"SELECT * FROM meds WHERE name LIKE {medicine_name}%")
     return med_list
 
@@ -199,6 +205,14 @@ def filter_custs(name_cond, age_cond, sex_cond):
         cmd = (
             f"SELECT * FROM custs WHERE {name_cond_str} {age_cond_str} {sex_cond_str};"
         )
+
+
+def create_new_order(cust_id, medicine_data, txn_date):
+    if execute_sql(f'SELECT * FROM {orders[name]}') == []:
+        order_id = 0000
+        for data_item in medicine_data:
+            med_id, qty = data_item
+            execute_sql(f'INSERT INTO {orders[name]} VALUES ({order_id}, {cust_id}, {med_id}, {qty}, {txn_date})')
 
 
 def init():
