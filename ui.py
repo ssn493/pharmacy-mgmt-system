@@ -176,7 +176,11 @@ class pos_page:
         )
 
         self.med_dropdown = Dropdown(self.med_name_entry)
-        
+        self.med_name_entry.after(2000, lambda: self.med_dropdown.update(cmd=lambda x: self.med_name_entry.insert(0, x)))
+
+        s = lambda event: self.med_dropdown.data.append(list(self.med_name_entry.get()))
+        self.med_name_entry.bind("Key-Release", s)
+
 
         self.med_search_btn = ttk.Button(
             self.medicine_details_page,

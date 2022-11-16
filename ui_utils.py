@@ -379,6 +379,7 @@ class medTable:
 class Dropdown:
     def __init__(self, root):
         self.rootframe = ttk.Frame(root, style='dropdown.TFrame')
+        self.rootframe.lift()
         self.rootframe.place(relx=0.8, rely=0.5, in_=root)
         self.info = self.rootframe.place_info()
         
