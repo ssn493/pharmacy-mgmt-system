@@ -374,3 +374,32 @@ class medTable:
 
     def grid(self,**kwargs):
         self.rootframe.grid(**kwargs)
+
+
+class Dropdown:
+    def __init__(self, root):
+        self.rootframe = ttk.Frame(root, style='dropdown.TFrame')
+        self.rootframe.place(relx=0.8, rely=0.5, in_=root)
+        self.info = self.rootframe.place_info()
+        
+        self.items = []
+        self.data = []
+
+    def hide(self):
+        self.rootframe.place_forget()
+
+    def show(self):
+        self.rootframe.place(self.info)
+
+    def delete_all(self):
+        if self.items != []:
+            for item in self.items:
+                item.destroy()
+
+    def update(self, cmd):
+        if len(self.items) != len(self.data):
+            self.hide()
+            for element in self.data:
+                e = ttk.Button(self.rootframe, text = element, command=lambda: cmd(element))
+            self.show()
+

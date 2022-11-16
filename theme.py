@@ -5,7 +5,7 @@ colorscheme = {
     "dark": "#0f1012",
     "darkh": "#343333",
     "grey": "#535757",
-    'midgrey': '#c0c3c3',
+    "midgrey": "#c0c3c3",
     "lightgrey": "#dadee2",
     # "lightgrey": "#dfe2e7",
     "light": "#fffefe",
@@ -174,7 +174,12 @@ def style(root):
         ],
     )
     style.configure("big.TLabel", font=bigfont, padding=6, anchor=tk.CENTER)
-    style.configure("small.TLabel", font=smallfont, padding=(0, 10, 0, 0), foreground=colorscheme['grey'])
+    style.configure(
+        "small.TLabel",
+        font=smallfont,
+        padding=(0, 10, 0, 0),
+        foreground=colorscheme["grey"],
+    )
     style.configure(
         "accent.TLabel",
         foreground=colorscheme["accent"],
@@ -182,7 +187,7 @@ def style(root):
         bordercolor=colorscheme["accent"],
         borderwidth=1,
         font=bold,
-        anchor='center'
+        anchor="center",
     )
     style.configure(
         "TableHeader.TLabel",
@@ -193,12 +198,12 @@ def style(root):
     )
     style.configure(
         "success.TLabel",
-        foreground='#33e38a',
+        foreground="#33e38a",
         font=bold,
     )
     style.configure(
         "error.TLabel",
-        foreground='#33e38a',
+        foreground="#33e38a",
         font=bold,
     )
 
@@ -518,13 +523,20 @@ def style(root):
         borderwidth=2,
     )
 
+    style.configure(
+        "dropdown.TFrame",
+        background=colorscheme["lighth"],
+        lightcolor=colorscheme["lighth"],
+        darkcolor=colorscheme["lighth"],
+    )
+
     return style
 
 
 if __name__ == "__main__":
     root = tk.Tk()
     s = style(root)
-    print(s.layout("Treeview.treearea"))
+    print(s.layout("Treeview"))
     print(s.element_options("Treeview.treearea"))
 
     root.mainloop()

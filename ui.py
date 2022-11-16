@@ -49,7 +49,7 @@ class emp_login_page:
         return self.rootframe
 
 
-class past_orders_page:
+class recent_orders_page:
     def __init__(self, master):
         self.rootframe = ttk.Frame(master)
         self.rootframe.pack(fill="both", expand=1)
@@ -174,6 +174,9 @@ class pos_page:
         self.med_name_entry.grid(
             row=1, column=0, padx=10, pady=4, columnspan=7, sticky="ew"
         )
+
+        self.med_dropdown = Dropdown(self.med_name_entry)
+        
 
         self.med_search_btn = ttk.Button(
             self.medicine_details_page,

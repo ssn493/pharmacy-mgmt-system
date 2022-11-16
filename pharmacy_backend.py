@@ -236,6 +236,7 @@ def create_new_order(cust_id, medicine_data, txn_date):
         )
 
 
+
 def show_past_orders(cust_id):
     order_list = execute_sql(
         f"SELECT DISTINCT order_id FROM {orders[name]} WHERE cust_id={cust_id}"
