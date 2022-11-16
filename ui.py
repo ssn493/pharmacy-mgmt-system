@@ -139,7 +139,7 @@ class pos_page:
             state="disabled",
         )
         self.new_cust_reg_btn.grid(
-            row=9, column=0, columnspan=4, padx=10, pady=6, sticky="swe"
+            row=9, column=0, columnspan=8, padx=10, pady=6, sticky="swe"
         )
 
         self.new_cust_warn_label = ttk.Label(
@@ -147,10 +147,10 @@ class pos_page:
             text="Customer not found! Register new customer",
             style="accent.TLabel",
         )
-        self.new_cust_reg_btn.grid(
-            row=9,
-            column=0,
-            columnspan=4,
+        self.new_cust_warn_label.grid(
+            row=10,
+            column=3,
+            columnspan=2,
             ipadx=6,
             ipady=6,
             padx=10,
