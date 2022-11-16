@@ -5,13 +5,13 @@ colorscheme = {
     "dark": "#0f1012",
     "darkh": "#343333",
     "grey": "#535757",
-    "lightgrey": "#d8dadb",
+    "lightgrey": "#dadee2",
     # "lightgrey": "#dfe2e7",
     "light": "#fffefe",
     "lighth": "#ececee",
     "accent": "#fc6373",
     "accenth": "#ff5877",
-    "hl": "#e2e4e4",
+    "hl": "#dfe2e3",
     "ahl": "#ff6884",
 }
 
@@ -33,10 +33,10 @@ def style(root):
     style.configure(
         "TButton",
         background=colorscheme["light"],
-        lightcolor=colorscheme["light"],
-        darkcolor=colorscheme["light"],
         foreground=colorscheme["dark"],
-        bordercolor=colorscheme["dark"],
+        lightcolor=colorscheme["lightgrey"],
+        darkcolor=colorscheme["lightgrey"],
+        bordercolor=colorscheme["lightgrey"],
         focuscolor=colorscheme["lighth"],
         focusthickness=1,
         borderwidth=4,
@@ -49,11 +49,11 @@ def style(root):
             ("disabled", colorscheme["lightgrey"]),
         ],
         lightcolor=[
-            ("active", colorscheme["lighth"]),
+            ("active", colorscheme["lightgrey"]),
             ("pressed", colorscheme["lighth"]),
         ],
         darkcolor=[
-            ("active", colorscheme["lighth"]),
+            ("active", colorscheme["lightgrey"]),
             ("pressed", colorscheme["lighth"]),
         ],
         bordercolor=[
@@ -93,7 +93,7 @@ def style(root):
             ("disabled", colorscheme["lightgrey"]),
         ],
         bordercolor=[
-            ("pressed", colorscheme["dark"]),
+            ("pressed", colorscheme["ahl"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
     )
@@ -124,6 +124,38 @@ def style(root):
         focuscolor=[("pressed", colorscheme["darkh"])],
         bordercolor=[("pressed", colorscheme["darkh"])],
     )
+    style.configure(
+        "borderless.TButton",
+        background=colorscheme["light"],
+        foreground=colorscheme["dark"],
+        lightcolor=colorscheme["light"],
+        darkcolor=colorscheme["light"],
+        bordercolor=colorscheme["light"],
+        focuscolor=colorscheme["lighth"],
+        focusthickness=1,
+        borderwidth=4,
+    )
+    style.map(
+        "borderless.TButton",
+        background=[
+            ("pressed", colorscheme["hl"]),
+            ("active", colorscheme["lighth"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        lightcolor=[
+            ("active", colorscheme["lighth"]),
+            ("pressed", colorscheme["hl"]),
+        ],
+        darkcolor=[
+            ("active", colorscheme["lighth"]),
+            ("pressed", colorscheme["hl"]),
+        ],
+        bordercolor=[
+            ("active", colorscheme["lighth"]),
+            ("pressed", colorscheme["hl"]),
+        ],
+        focuscolor=[("pressed", colorscheme["lighth"])],
+    )
 
     style.configure(
         "TLabel",
@@ -142,6 +174,21 @@ def style(root):
     )
     style.configure("big.TLabel", font=bigfont, padding=6, anchor=tk.CENTER)
     style.configure("small.TLabel", font=smallfont, padding=(0, 6, 0, 0))
+    style.configure(
+        "accent.TLabel",
+        foreground=colorscheme["accent"],
+        padding=6,
+        bordercolor=colorscheme["accent"],
+        borderwidth=2,
+        font=bold,
+    )
+    style.configure(
+        "TableHeader.TLabel",
+        padding=6,
+        bordercolor=colorscheme["grey"],
+        borderwidth=2,
+        font=bold,
+    )
 
     style.configure(
         "TFrame",
@@ -194,7 +241,29 @@ def style(root):
         "TEntry",
         bordercolor=[
             ("focus", colorscheme["accent"]),
-            ("disabled", "#c2c4ca"),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        lightcolor=[("focus", colorscheme["accent"])],
+    )
+
+    style.configure(
+        "Table.TEntry",
+        fieldbackground=colorscheme["light"],
+        bordercolor=colorscheme["grey"],
+        lightcolor=colorscheme["lighth"],
+        darkcolor=colorscheme["lighth"],
+        insertcolor=colorscheme["accent"],
+        insertwidth=2,
+        borderwidth=0,
+        bd=0,
+        padding=(6, 6),
+        relief=tk.FLAT,
+    )
+    style.map(
+        "Table.TEntry",
+        bordercolor=[
+            ("focus", colorscheme["accent"]),
+            ("disabled", colorscheme["lightgrey"]),
         ],
         lightcolor=[("focus", colorscheme["accent"])],
     )
@@ -372,9 +441,9 @@ def style(root):
         borderwidth=0,
         bordercolor=colorscheme["light"],
         foreground=colorscheme["light"],
-        background=colorscheme["dark"],
-        lightcolor=colorscheme["dark"],
-        darkcolor=colorscheme["dark"],
+        background=colorscheme["darkh"],
+        lightcolor=colorscheme["darkh"],
+        darkcolor=colorscheme["darkh"],
         focuscolor=colorscheme["darkh"],
     )
     style.map(

@@ -122,21 +122,34 @@ class VerticalNavMenu:
             self.toggle_menu_button()
 
     def toggle_menu_button(self):
-        menu_img = tk.PhotoImage(
-            file=os.getcwd()
-            + os.path.sep
-            + "assets"
-            + os.path.sep
-            + "menu_dark_btn.png"
+
+        self.menu_img = tk.PhotoImage(
+            master=self.root_frame,
+            file="".join(
+                [os.getcwd(), os.path.sep, "assets", os.path.sep, "menu_dark_btn.png"]
+            ),
+            name="menu_btn_image",
+        )
+        print(
+            os.path.isfile(
+                "".join(
+                    [
+                        os.getcwd(),
+                        os.path.sep,
+                        "assets",
+                        os.path.sep,
+                        "menu_dark_btn.png",
+                    ]
+                )
+            )
         )
         self.menu_show_btn = ttk.Button(
             self.root_frame,
-            image=menu_img,
+            image=self.menu_img,
             text="Menu",
             command=self.toggle_menu,
             style="menubtn.TButton",
         )
-        self.menu_show_btn.image = menu_img
         self.menu_show_btn.lift()
         self.menu_show_btn.pack(in_=self.root_frame, anchor="nw")
 
@@ -203,9 +216,8 @@ class VerticalNavMenu:
 
 
 class HorizontalNavMenu:
-    def __init__(self, master, menu_button=False):
+    def __init__(self, master):
         self.root_frame = ttk.Frame(master)
-        self.menu_button_flag = menu_button
         self.menu_frame = ttk.Frame(self.root_frame, style="NavMenu.TFrame")
         self.menu_frame.lift()
         self.menu_frame.pack(
@@ -227,9 +239,6 @@ class HorizontalNavMenu:
         self.menu_btn_widgets = []
         self.pack_info = {"fill": "both", "expand": 1}
 
-        if self.menu_button_flag:
-            self.toggle_menu_button()
-
     def show_frame(self, frame_index):
         if frame_index != self.current_frame_index:
             current_frame_data_widget = self.content_frame_buffer[
@@ -242,8 +251,6 @@ class HorizontalNavMenu:
             self.menu_btn_widgets[self.current_frame_index].state(["!pressed"])
             self.menu_btn_widgets[frame_index].state(["pressed"])
             self.current_frame_index = frame_index
-            if self.menu_button_flag:
-                self.toggle_menu()
 
     def add(self, frame, text=None, custom_cmd=None):
         if not isinstance(text, str):
@@ -269,40 +276,21 @@ class HorizontalNavMenu:
         else:
             menu_btn.config(command=custom_cmd)
         menu_btn.pack(
-            side="left", fill="y", padx=0, ipadx=4, pady=0, ipady=4, anchor="center"
+            side="left", fill="y", padx=0, ipadx=10, pady=0, ipady=4, anchor="center"
         )
         self.menu_btn_widgets.append(menu_btn)
-
-    def toggle_menu_button(self):
-        menu_img = tk.PhotoImage(
-            file=os.getcwd()
-            + os.path.sep
-            + "assets"
-            + os.path.sep
-            + "menu_dark_btn.png"
-        )
-        self.menu_show_btn = ttk.Button(
-            self.root_frame,
-            image=menu_img,
-            text="Menu",
-            command=self.toggle_menu,
-            style="menubtn.TButton",
-        )
-        self.menu_show_btn.image = menu_img
-        self.menu_show_btn.lift()
-        self.menu_show_btn.pack(in_=self.root_frame, anchor="nw")
 
     def toggle_menu(self):
         toggle_packed_widget(self.menu_data_widget)
 
     def prev_page(self):
-        if self.current_frame_index == 0:
+        if self.current_frame_index <= 0:
             pass
         else:
             self.show_frame(self.current_frame_index - 1)
 
     def next_page(self):
-        if self.current_frame_index == len(obj) - 1:
+        if self.current_frame_index >= len(self.content_frame_buffer) - 1:
             pass
         else:
             self.show_frame(self.current_frame_index + 1)
@@ -311,3 +299,28 @@ class HorizontalNavMenu:
         self.root_frame.pack(**pack_info)
         if self.content_frame_buffer != []:
             self.show_frame(0)
+
+
+class medTable:
+    def __init__(self, root, columns):
+        self.rootframe = ttk.Frame()
+        grid_config(self.rootframe, cols=len(columns))
+        self.num_rows = 0
+        self.num_cols = len(columns)
+        self.row_widgets = []
+        # code for creating table
+        for j in range(self.num_cols):
+
+            h = ttk.Label(root, text=columns[j])
+            h.grid(row=self.num_rows, column=j, sticky="we")
+
+    def ins_row(self, lst):
+        self.num_rows += 1
+        col_widgets = []
+        for j in range(self.num_cols):
+
+            e = ttk.Entry(root)
+            e.grid(row=self.num_rows, column=j, sticky="we")
+            e.insert(END, lst[j])
+            col_widgets.append(e)
+        self.row_widgets.append(col_widgets)

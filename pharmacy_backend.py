@@ -194,7 +194,7 @@ def search_cust_by_name(cust_name):
     return cust_list
 
 def search_cust_by_phone_no(phone_no):
-    cust_list = execute_sql(f"SELECT * FROM {customers[name]} WHERE CAST(phone_no AS TEXT) LIKE {phone_no}%")
+    cust_list = execute_sql(f"SELECT * FROM {customers[name]} WHERE phone_no={phone_no}")
     return cust_list
 
 def filter_custs(name_cond, age_cond, sex_cond):
