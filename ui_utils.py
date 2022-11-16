@@ -277,7 +277,7 @@ class HorizontalNavMenu:
         else:
             menu_btn.config(command=custom_cmd)
         menu_btn.pack(
-            side="left", fill="y", padx=0, ipadx=10, pady=0, ipady=4, anchor="center"
+            side="left", fill="y", padx=0, ipadx=20, pady=0, ipady=4, anchor="center"
         )
         self.menu_btn_widgets.append(menu_btn)
 
@@ -341,7 +341,7 @@ class medTable:
         # code for creating table
         for j in range(self.num_cols):
 
-            h = ttk.Label(root, text=columns[j], style='THeading.TLabel')
+            h = ttk.Label(self.rootframe, text=columns[j], style='THeading.TLabel')
             h.grid(row=self.num_rows, column=j, sticky="we")
 
         self.data = []
@@ -356,7 +356,7 @@ class medTable:
         e = ttk.Entry(self.rootframe, style='Table.TEntry')
         e.grid(row=self.num_rows, column=1, sticky="we")
 
-        c = ttk.Button(text='Check', style='accent.TButton', command=lambda: self.check_med_availability(l, e))
+        c = ttk.Button(self.rootframe,text='Check', style='accent.TButton', command=lambda: self.check_med_availability(l, e))
         e.grid(row=self.num_rows, column=1, sticky="we")
 
         col_widgets.append(self.num_rows)
@@ -372,5 +372,5 @@ class medTable:
         else:
             med_name_lbl['style'] = 'error.TLabel'
 
-    def grid(**kwargs):
+    def grid(self,**kwargs):
         self.rootframe.grid(**kwargs)

@@ -5,6 +5,7 @@ colorscheme = {
     "dark": "#0f1012",
     "darkh": "#343333",
     "grey": "#535757",
+    'midgrey': '#c0c3c3',
     "lightgrey": "#dadee2",
     # "lightgrey": "#dfe2e7",
     "light": "#fffefe",
@@ -34,9 +35,9 @@ def style(root):
         "TButton",
         background=colorscheme["light"],
         foreground=colorscheme["dark"],
-        lightcolor=colorscheme["lightgrey"],
-        darkcolor=colorscheme["lightgrey"],
-        bordercolor=colorscheme["lightgrey"],
+        lightcolor=colorscheme["midgrey"],
+        darkcolor=colorscheme["midgrey"],
+        bordercolor=colorscheme["midgrey"],
         focuscolor=colorscheme["lighth"],
         focusthickness=1,
         borderwidth=4,
@@ -49,11 +50,11 @@ def style(root):
             ("disabled", colorscheme["lightgrey"]),
         ],
         lightcolor=[
-            ("active", colorscheme["lightgrey"]),
+            ("active", colorscheme["midgrey"]),
             ("pressed", colorscheme["lighth"]),
         ],
         darkcolor=[
-            ("active", colorscheme["lightgrey"]),
+            ("active", colorscheme["midgrey"]),
             ("pressed", colorscheme["lighth"]),
         ],
         bordercolor=[
@@ -173,7 +174,7 @@ def style(root):
         ],
     )
     style.configure("big.TLabel", font=bigfont, padding=6, anchor=tk.CENTER)
-    style.configure("small.TLabel", font=smallfont, padding=(0, 6, 0, 0))
+    style.configure("small.TLabel", font=smallfont, padding=(0, 10, 0, 0), foreground=colorscheme['grey'])
     style.configure(
         "accent.TLabel",
         foreground=colorscheme["accent"],
@@ -181,6 +182,7 @@ def style(root):
         bordercolor=colorscheme["accent"],
         borderwidth=1,
         font=bold,
+        anchor='center'
     )
     style.configure(
         "TableHeader.TLabel",
@@ -197,14 +199,6 @@ def style(root):
     style.configure(
         "error.TLabel",
         foreground='#33e38a',
-        font=bold,
-    )
-    style.configure(
-        "accent.TLabel",
-        foreground=colorscheme["accent"],
-        padding=10,
-        bordercolor=colorscheme["accent"],
-        borderwidth=1,
         font=bold,
     )
 
@@ -245,7 +239,7 @@ def style(root):
     style.configure(
         "TEntry",
         fieldbackground=colorscheme["light"],
-        bordercolor=colorscheme["grey"],
+        bordercolor=colorscheme["midgrey"],
         lightcolor=colorscheme["lighth"],
         darkcolor=colorscheme["lighth"],
         insertcolor=colorscheme["accent"],

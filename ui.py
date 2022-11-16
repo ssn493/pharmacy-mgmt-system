@@ -86,7 +86,7 @@ class pos_page:
         )
         l2.grid(row=1, column=0, padx=10, pady=4, sticky="sw")
 
-        self.cust_phone_number_entry = ttk.Entry(self.customer_details_page, style='Table.TEntry')
+        self.cust_phone_number_entry = ttk.Entry(self.customer_details_page)
         self.cust_phone_number_entry.grid(
             row=2, column=0, padx=10, pady=4, columnspan=6, sticky="nswe"
         )
@@ -181,22 +181,8 @@ class pos_page:
         )
         self.med_search_btn.grid(row=1, column=7, padx=10, pady=4, sticky="ne")
 
-        l2 = ttk.Label(
-            self.medicine_details_page, text="Quantity", style="small.TLabel"
-        )
-        l2.grid(row=2, column=0, padx=10, pady=4, sticky="sw")
-
-        self.qty_entry = ttk.Entry(self.medicine_details_page)
-        self.qty_entry.grid(
-            row=3, column=0, padx=10, pady=4, columnspan=8, sticky="sew"
-        )
-
-        self.add_sel_btn = ttk.Button(
-            self.medicine_details_page, text="Add Selected", style="accent.TButton"
-        )
-        self.add_sel_btn.grid(
-            row=7, column=0, padx=10, pady=8, columnspan=8, sticky="ew"
-        )
+        self.med_table = medTable(self.medicine_details_page)
+        self.med_table.grid(row=2, column=0, padx=10, pady=4, columnspan=8, sticky="ew")
 
         #########################
         # Payment Details Page #
@@ -341,7 +327,7 @@ class about_page:
         l1.grid(row=1, column=3, padx=20, pady=5, sticky="ns")
 
         l2 = ttk.Label(
-            self.rootframe, text="Moonlighting is illegal.", style="small.TLabel"
+            self.rootframe, text="-_-", style="small.TLabel"
         )
         l2.grid(row=2, column=3, padx=20, pady=5, sticky="ns")
 
