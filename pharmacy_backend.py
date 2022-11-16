@@ -164,8 +164,8 @@ def add_new_medicines(data):
     insert_from_dict(meds[name], data)
 
 
-def get_med_quantity(med_id):
-    med_qty = select_statement(meds[name], "stock_quantity", f"id = {med_id}")
+def get_med_quantity(med_name):
+    med_qty = execute_sql(f'SELECT stock_quantity FROM {meds[name]} WHERE name = {med_name}')
     med_qty = int(med_qty)
     return med_qty
 

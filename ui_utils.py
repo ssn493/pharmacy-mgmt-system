@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from pharmacy_backend import get_med_quantity
 import os
 
 
@@ -301,9 +302,9 @@ class HorizontalNavMenu:
             self.show_frame(0)
 
 
-class medTable:
+class Table:
     def __init__(self, root, columns):
-        self.rootframe = ttk.Frame()
+        self.rootframe = ttk.Frame(root)
         grid_config(self.rootframe, cols=len(columns))
         self.num_rows = 0
         self.num_cols = len(columns)
@@ -311,7 +312,7 @@ class medTable:
         # code for creating table
         for j in range(self.num_cols):
 
-            h = ttk.Label(root, text=columns[j])
+            h = ttk.Label(root, text=columns[j], style='THeading.TLabel')
             h.grid(row=self.num_rows, column=j, sticky="we")
 
     def ins_row(self, lst):
@@ -319,8 +320,57 @@ class medTable:
         col_widgets = []
         for j in range(self.num_cols):
 
-            e = ttk.Entry(root)
-            e.grid(row=self.num_rows, column=j, sticky="we")
+            e = ttk.Entry(self.rootframe)
+            e.grid(row=self.num_rows, column=j, sticky="we", style='Table.TEntry')
             e.insert(END, lst[j])
             col_widgets.append(e)
         self.row_widgets.append(col_widgets)
+
+    def grid(**kwargs):
+        self.rootframe.grid(**kwargs)
+
+class medTable:
+    def __init__(self, root, columns=['Name', 'Qty', 'Availability']):
+        self.rootframe = ttk.Frame(root)
+        grid_config(self.rootframe, cols=len(columns))
+        self.rootframe.grid_columnconfigure(0, weight=3)
+        self.num_rows = 0
+        self.num_cols = 3
+        self.row_widgets = []
+    
+        # code for creating table
+        for j in range(self.num_cols):
+
+            h = ttk.Label(root, text=columns[j], style='THeading.TLabel')
+            h.grid(row=self.num_rows, column=j, sticky="we")
+
+        self.data = []
+
+    def ins_row(self, lst):
+        self.num_rows += 1
+        col_widgets = []
+
+        l = ttk.Label(self.rootframe, text=lst[0])
+        l.grid(row=self.num_rows, column=0, sticky="we")
+
+        e = ttk.Entry(self.rootframe, style='Table.TEntry')
+        e.grid(row=self.num_rows, column=1, sticky="we")
+
+        c = ttk.Button(text='Check', style='accent.TButton', command=lambda: self.check_med_availability(l, e))
+        e.grid(row=self.num_rows, column=1, sticky="we")
+
+        col_widgets.append(self.num_rows)
+        col_widgets.append(l)
+        col_widgets.append(e)
+        col_widgets.append(c)
+        self.row_widgets.append(col_widgets)
+        self.data.append(lst)
+
+    def check_med_availability(self, med_name_lbl,qty_entry ):
+        if int(qty_entry.get()) < get_med_quantity(med_name_entry['text']):
+            med_name_lbl['style'] = 'success.TLabel'
+        else:
+            med_name_lbl['style'] = 'error.TLabel'
+
+    def grid(**kwargs):
+        self.rootframe.grid(**kwargs)
