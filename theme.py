@@ -167,7 +167,7 @@ def style(root):
     style.configure(
         "TEntry",
         fieldbackground=colorscheme["light"],
-        bordercolor=colorscheme["dark"],
+        bordercolor=colorscheme["grey"],
         lightcolor=colorscheme["lighth"],
         darkcolor=colorscheme["lighth"],
         insertcolor=colorscheme["accent"],
@@ -367,7 +367,7 @@ def style(root):
     )
 
     style.configure(
-        "verticalNavMenu.TButton",
+        "NavMenu.TButton",
         background=colorscheme["lightgrey"],
         foreground=colorscheme["dark"],
         darkcolor=colorscheme["lightgrey"],
@@ -377,7 +377,7 @@ def style(root):
         borderwidth=2,
     )
     style.map(
-        "verticalNavMenu.TButton",
+        "NavMenu.TButton",
         background=[
             ("active", colorscheme["lighth"]),
             ("disabled", colorscheme["lightgrey"]),
@@ -401,7 +401,7 @@ def style(root):
         ],
     )
     style.configure(
-        "verticalNavMenu.TFrame",
+        "NavMenu.TFrame",
         background=colorscheme["lightgrey"],
         lightcolor=colorscheme["lightgrey"],
         darkcolor=colorscheme["lightgrey"],

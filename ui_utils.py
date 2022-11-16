@@ -100,7 +100,7 @@ class VerticalNavMenu:
     def __init__(self, master, menu_button=False):
         self.root_frame = ttk.Frame(master)
         self.menu_button_flag = menu_button
-        self.menu_frame = ttk.Frame(self.root_frame, style="verticalNavMenu.TFrame")
+        self.menu_frame = ttk.Frame(self.root_frame, style="NavMenu.TFrame")
         self.menu_frame.pack(side="left", fill="both", expand=1, anchor="w")
         self.menu_data_widget = widget_packdata_fmt(self.menu_frame)
 
@@ -170,13 +170,101 @@ class VerticalNavMenu:
         menu_btn = ttk.Button(
             self.menu_frame,
             text=text,
-            style="verticalNavMenu.TButton",
+            style="NavMenu.TButton",
         )
         if custom_cmd == None:
             menu_btn.config(command=lambda: self.show_frame(frame_index))
         else:
             menu_btn.config(command=custom_cmd)
         menu_btn.pack(fill="x", padx=0, ipadx=4, pady=0, ipady=4)
+        self.menu_btn_widgets.append(menu_btn)
+
+    def pack(self, **pack_info):
+        self.root_frame.pack(**pack_info)
+        if self.content_frame_buffer != []:
+            self.show_frame(0)
+
+class HorizontalNavMenu:
+    def __init__(self, master, menu_button=False):
+        self.root_frame = ttk.Frame(master)
+        self.menu_button_flag = menu_button
+        self.menu_frame = ttk.Frame(self.root_frame, style="NavMenu.TFrame")
+        self.menu_frame.pack(side="top", fill="x", expand=1, anchor="center")
+        self.menu_data_widget = widget_packdata_fmt(self.menu_frame)
+
+        self.content_frame = ttk.Frame(self.root_frame, style="verticalNavMenu.TFrame")
+        self.content_frame.pack(
+            side="top",
+            fill="both",
+            expand=7,
+            ipady=4,
+            ipadx=4,
+        )
+
+        self.current_frame_index = -1
+        self.content_frame_buffer = []
+        self.menu_btn_widgets = []
+        self.pack_info = {"fill": "both", "expand": 1}
+
+        if self.menu_button_flag:
+            self.toggle_menu_button()
+    
+    def toggle_menu_button(self):
+        menu_img = tk.PhotoImage(file=os.getcwd()+os.path.sep+'assets'+os.path.sep+"menu_dark_btn.png")
+        self.menu_show_btn = ttk.Button(
+            self.root_frame,
+            image=menu_img,
+            text="Menu",
+            command=self.toggle_menu,
+            style="menubtn.TButton",
+        )
+        self.menu_show_btn.image = menu_img
+        self.menu_show_btn.lift()
+        self.menu_show_btn.pack(in_=self.root_frame, anchor="nw")
+
+
+    def toggle_menu(self):
+        toggle_packed_widget(self.menu_data_widget)
+
+    def show_frame(self, frame_index):
+        if frame_index != self.current_frame_index:
+            current_frame_data_widget = self.content_frame_buffer[
+                self.current_frame_index
+            ]
+            frame_data_widget = self.content_frame_buffer[frame_index]
+
+            hide_packed_widget(current_frame_data_widget)
+            show_packed_widget(frame_data_widget)
+            self.menu_btn_widgets[self.current_frame_index].state(["!pressed"])
+            self.menu_btn_widgets[frame_index].state(["pressed"])
+            self.current_frame_index = frame_index
+            if self.menu_button_flag:
+                self.toggle_menu()
+
+    def add(self, frame, text=None, custom_cmd=None):
+        if not isinstance(text, str):
+            raise Exception("Entered text is not valid")
+
+        frame_index = len(self.content_frame_buffer)
+        frame.pack(**self.pack_info)
+        frame_data_widget = {
+            "widget": frame,
+            "packinfo": self.pack_info,
+            "hidden": False,
+        }
+        hide_packed_widget(frame_data_widget)
+        self.content_frame_buffer.append(frame_data_widget)
+
+        menu_btn = ttk.Button(
+            self.menu_frame,
+            text=text,
+            style="NavMenu.TButton",
+        )
+        if custom_cmd == None:
+            menu_btn.config(command=lambda: self.show_frame(frame_index))
+        else:
+            menu_btn.config(command=custom_cmd)
+        menu_btn.pack(side='left', fill="y", padx=0, ipadx=4, pady=0, ipady=4)
         self.menu_btn_widgets.append(menu_btn)
 
     def pack(self, **pack_info):

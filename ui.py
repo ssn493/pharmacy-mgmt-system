@@ -149,7 +149,7 @@ class login_page:
         return self.rootframe
 
 
-class pos_page:
+class new_order_page:
     def __init__(self, master, root_window):
         self.rootframe = ttk.Frame(master, style="border.TFrame")
         self.note = ttk.Notebook(self.rootframe)
@@ -321,134 +321,12 @@ class pos_page:
 class past_orders_page:
     def __init__(self, master):
         self.rootframe = ttk.Frame(master)
-        self.note = ttk.Notebook(self.rootframe)
-
-        self.c = ttk.Frame(self.note)
-
-        l1 = ttk.Label(self.c, text="Customer Name", style="small.TLabel")
-        l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw")
-
-        self.name_entry = ttk.Entry(self.c)
-        self.name_entry.grid(
-            row=1, column=0, padx=10, pady=2, columnspan=6, sticky="ew"
-        )
-
-        l2 = ttk.Label(self.c, text="Age", style="small.TLabel")
-        l2.grid(row=2, column=0, padx=10, pady=2, sticky="sw")
-
-        self.age_entry = ttk.Entry(self.c)
-        self.age_entry.grid(row=3, column=0, padx=10, pady=2, columnspan=3, sticky="ew")
-
-        l3 = ttk.Label(self.c, text="Sex", style="small.TLabel")
-        l3.grid(row=2, column=4, padx=10, pady=2, sticky="sw")
-
-        self.sex_entry = ttk.Entry(self.c)
-        self.sex_entry.grid(row=3, column=4, padx=10, pady=2, columnspan=4, sticky="ew")
-
-        l4 = ttk.Label(self.c, text="Address", style="small.TLabel")
-        l4.grid(row=4, column=0, padx=10, pady=2, sticky="sw")
-
-        self.addr_entry = ttk.Entry(self.c)
-        self.addr_entry.grid(
-            row=5, column=0, padx=10, pady=2, columnspan=8, sticky="ew"
-        )
-
-        self.cust_table = ttk.Treeview(self.c, columns=["a", "b", "c", "d"])
-        self.cust_table.grid(row=6, column=0, columnspan=8, rowspan=2)
-
-        grid_config(self.c)
-
-        self.m = ttk.Frame(master)
-
-        l1 = ttk.Label(self.m, text="Medicine Name", style="small.TLabel")
-        l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw")
-
-        self.med_name_entry = ttk.Entry(self.m)
-        self.med_name_entry.grid(
-            row=1, column=0, padx=10, pady=2, columnspan=7, sticky="ew"
-        )
-
-        self.med_search_btn = ttk.Button(
-            self.m,
-            text="Search",
-        )
-        self.med_search_btn.grid(row=1, column=7, padx=10, pady=2, sticky="ne")
-
-        l2 = ttk.Label(self.m, text="Quantity", style="small.TLabel")
-        l2.grid(row=2, column=0, padx=10, pady=2, sticky="sw")
-
-        self.qty_entry = ttk.Entry(self.m)
-        self.qty_entry.grid(
-            row=3, column=0, padx=10, pady=2, columnspan=8, sticky="sew"
-        )
-
-        self.add_sel_btn = ttk.Button(
-            self.m, text="Add Selected", style="accent.TButton"
-        )
-        self.add_sel_btn.grid(
-            row=7, column=0, padx=10, pady=8, columnspan=8, sticky="ew"
-        )
-
-        grid_config(self.m)
-
-        self.p = ttk.Frame(master)
-
-        l1 = ttk.Label(self.p, text="Payment Date", style="small.TLabel")
-        l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw")
-
-        self.datetime_entry = ttk.Entry(self.p)
-        self.datetime_entry.grid(
-            row=1, column=0, padx=10, pady=2, columnspan=5, sticky="ew"
-        )
-
-        self.ct_btn = ttk.Button(
-            self.p,
-            text="Insert Current Date",
-            command=lambda: self.datetime_entry.insert(
-                "0", str(datetime.datetime.now().date())
-            ),
-        )
-        self.ct_btn.grid(row=1, column=6, columnspan=3, padx=10, pady=2, sticky="new")
-
-        self.gen_recpt = ttk.Button(
-            self.p, text="Generate Receipt", style="accent.TButton"
-        )
-        self.gen_recpt.grid(row=3, column=0, padx=10, pady=8, columnspan=8, sticky="ew")
-
-        var = tk.StringVar()
-        self.payment_method_menu = ttk.OptionMenu(
-            self.p, var, *["Cash", "Credit/Debit Card", "UPI"]
-        )
-        self.payment_method_menu.grid(
-            row=2, column=0, padx=10, pady=8, columnspan=8, sticky="ew"
-        )
-
-        grid_config(self.p)
-
-        self.note.add(self.c, text="Customer Details")
-        self.note.add(self.m, text="Medicines")
-        self.note.add(self.p, text="Payment")
-        self.note.pack(fill="both", expand=1, padx=10)
-
-        self.n_btn = ttk.Button(
-            master=self.rootframe, text="Next >", command=lambda: next_tab(self.note)
-        )
-        self.n_btn.pack(side="right", anchor="se", padx=26, pady=4)
-
-        self.b_btn = ttk.Button(
-            master=self.rootframe, text="< Back", command=lambda: prev_tab(self.note)
-        )
-        self.b_btn.pack(side="left", anchor="sw", padx=26, pady=4)
-
         self.rootframe.pack(fill="both", expand=1)
+        grid_config(self.rootframe)
+        self.rootframe.grid_rowconfigure(0, weight=1)
 
-    def get_cust_data(self):
-        data = {}
-        data["name"] = self.name_entry.get()
-        data["age"] = self.name_entry.get()
-        data["sex"] = self.name_entry.get()
-        data["addr"] = self.name_entry.get()
-        return data
+        self.past_orders = ttk.Frame(self.rootframe)
+        self.past_orders.grid(row=0, column=1, columnspan=6)
 
     def as_tab(self):
         return self.rootframe
@@ -489,10 +367,10 @@ if __name__ == "__main__":
 
     note = VerticalNavMenu(root, menu_button=True)
 
-    p = pos_page(note.content_frame, root_window=root)
+    order = new_order_page(note.content_frame, root_window=root)
     abt = about_page(master=note.content_frame, root_window=root)
 
-    note.add(p.as_tab(), text="Point-Of-Sale")
+    note.add(order.as_tab(), text="New Order")
     note.add(abt.as_tab(), text="About")
     note.add(ttk.Frame(), text="Quit", custom_cmd=abt.quit_app)
     note.pack(fill="both", expand=1)
