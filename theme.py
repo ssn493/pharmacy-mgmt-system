@@ -177,9 +177,9 @@ def style(root):
     style.configure(
         "accent.TLabel",
         foreground=colorscheme["accent"],
-        padding=6,
+        padding=10,
         bordercolor=colorscheme["accent"],
-        borderwidth=2,
+        borderwidth=1,
         font=bold,
     )
     style.configure(
@@ -187,6 +187,24 @@ def style(root):
         padding=6,
         bordercolor=colorscheme["grey"],
         borderwidth=2,
+        font=bold,
+    )
+    style.configure(
+        "success.TLabel",
+        foreground='#33e38a',
+        font=bold,
+    )
+    style.configure(
+        "error.TLabel",
+        foreground='#33e38a',
+        font=bold,
+    )
+    style.configure(
+        "accent.TLabel",
+        foreground=colorscheme["accent"],
+        padding=10,
+        bordercolor=colorscheme["accent"],
+        borderwidth=1,
         font=bold,
     )
 
@@ -249,7 +267,7 @@ def style(root):
     style.configure(
         "Table.TEntry",
         fieldbackground=colorscheme["light"],
-        bordercolor=colorscheme["grey"],
+        bordercolor=colorscheme["light"],
         lightcolor=colorscheme["lighth"],
         darkcolor=colorscheme["lighth"],
         insertcolor=colorscheme["accent"],
@@ -262,10 +280,10 @@ def style(root):
     style.map(
         "Table.TEntry",
         bordercolor=[
-            ("focus", colorscheme["accent"]),
+            ("focus", colorscheme["light"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
-        lightcolor=[("focus", colorscheme["accent"])],
+        lightcolor=[("focus", colorscheme["light"])],
     )
 
     style.layout(
