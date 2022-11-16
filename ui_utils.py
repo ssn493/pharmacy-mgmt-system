@@ -101,7 +101,7 @@ class VerticalNavMenu:
         self.root_frame = ttk.Frame(master)
         self.menu_button_flag = menu_button
         self.menu_frame = ttk.Frame(self.root_frame, style="NavMenu.TFrame")
-        self.menu_frame.pack(side="left", fill="both", expand=1, anchor="w")
+        self.menu_frame.pack(side="left", fill="both", expand=0, anchor="w")
         self.menu_data_widget = widget_packdata_fmt(self.menu_frame)
 
         self.content_frame = ttk.Frame(self.root_frame, style="verticalNavMenu.TFrame")
@@ -120,9 +120,15 @@ class VerticalNavMenu:
 
         if self.menu_button_flag:
             self.toggle_menu_button()
-    
+
     def toggle_menu_button(self):
-        menu_img = tk.PhotoImage(file=os.getcwd()+os.path.sep+'assets'+os.path.sep+"menu_dark_btn.png")
+        menu_img = tk.PhotoImage(
+            file=os.getcwd()
+            + os.path.sep
+            + "assets"
+            + os.path.sep
+            + "menu_dark_btn.png"
+        )
         self.menu_show_btn = ttk.Button(
             self.root_frame,
             image=menu_img,
@@ -133,7 +139,6 @@ class VerticalNavMenu:
         self.menu_show_btn.image = menu_img
         self.menu_show_btn.lift()
         self.menu_show_btn.pack(in_=self.root_frame, anchor="nw")
-
 
     def toggle_menu(self):
         toggle_packed_widget(self.menu_data_widget)
@@ -179,24 +184,40 @@ class VerticalNavMenu:
         menu_btn.pack(fill="x", padx=0, ipadx=4, pady=0, ipady=4)
         self.menu_btn_widgets.append(menu_btn)
 
+    def prev_page(self):
+        if self.current_frame_index == 0:
+            pass
+        else:
+            self.show_frame(self.current_frame_index - 1)
+
+    def next_page(self):
+        if self.current_frame_index == len(obj) - 1:
+            pass
+        else:
+            self.show_frame(self.current_frame_index + 1)
+
     def pack(self, **pack_info):
         self.root_frame.pack(**pack_info)
         if self.content_frame_buffer != []:
             self.show_frame(0)
+
 
 class HorizontalNavMenu:
     def __init__(self, master, menu_button=False):
         self.root_frame = ttk.Frame(master)
         self.menu_button_flag = menu_button
         self.menu_frame = ttk.Frame(self.root_frame, style="NavMenu.TFrame")
-        self.menu_frame.pack(side="top", fill="x", expand=1, anchor="center")
+        self.menu_frame.lift()
+        self.menu_frame.pack(
+            side="top", fill="none", expand=0, anchor="center", padx=15, pady=15
+        )
         self.menu_data_widget = widget_packdata_fmt(self.menu_frame)
 
         self.content_frame = ttk.Frame(self.root_frame, style="verticalNavMenu.TFrame")
         self.content_frame.pack(
             side="top",
             fill="both",
-            expand=7,
+            expand=1,
             ipady=4,
             ipadx=4,
         )
@@ -208,23 +229,6 @@ class HorizontalNavMenu:
 
         if self.menu_button_flag:
             self.toggle_menu_button()
-    
-    def toggle_menu_button(self):
-        menu_img = tk.PhotoImage(file=os.getcwd()+os.path.sep+'assets'+os.path.sep+"menu_dark_btn.png")
-        self.menu_show_btn = ttk.Button(
-            self.root_frame,
-            image=menu_img,
-            text="Menu",
-            command=self.toggle_menu,
-            style="menubtn.TButton",
-        )
-        self.menu_show_btn.image = menu_img
-        self.menu_show_btn.lift()
-        self.menu_show_btn.pack(in_=self.root_frame, anchor="nw")
-
-
-    def toggle_menu(self):
-        toggle_packed_widget(self.menu_data_widget)
 
     def show_frame(self, frame_index):
         if frame_index != self.current_frame_index:
@@ -264,8 +268,44 @@ class HorizontalNavMenu:
             menu_btn.config(command=lambda: self.show_frame(frame_index))
         else:
             menu_btn.config(command=custom_cmd)
-        menu_btn.pack(side='left', fill="y", padx=0, ipadx=4, pady=0, ipady=4)
+        menu_btn.pack(
+            side="left", fill="y", padx=0, ipadx=4, pady=0, ipady=4, anchor="center"
+        )
         self.menu_btn_widgets.append(menu_btn)
+
+    def toggle_menu_button(self):
+        menu_img = tk.PhotoImage(
+            file=os.getcwd()
+            + os.path.sep
+            + "assets"
+            + os.path.sep
+            + "menu_dark_btn.png"
+        )
+        self.menu_show_btn = ttk.Button(
+            self.root_frame,
+            image=menu_img,
+            text="Menu",
+            command=self.toggle_menu,
+            style="menubtn.TButton",
+        )
+        self.menu_show_btn.image = menu_img
+        self.menu_show_btn.lift()
+        self.menu_show_btn.pack(in_=self.root_frame, anchor="nw")
+
+    def toggle_menu(self):
+        toggle_packed_widget(self.menu_data_widget)
+
+    def prev_page(self):
+        if self.current_frame_index == 0:
+            pass
+        else:
+            self.show_frame(self.current_frame_index - 1)
+
+    def next_page(self):
+        if self.current_frame_index == len(obj) - 1:
+            pass
+        else:
+            self.show_frame(self.current_frame_index + 1)
 
     def pack(self, **pack_info):
         self.root_frame.pack(**pack_info)

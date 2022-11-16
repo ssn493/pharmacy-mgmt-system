@@ -29,6 +29,7 @@ def style(root):
     smallfont = ("Inter Light", 9)
 
     style.configure(".", bg=colorscheme["light"], font=font)
+
     style.configure(
         "TButton",
         background=colorscheme["light"],
@@ -38,7 +39,7 @@ def style(root):
         bordercolor=colorscheme["dark"],
         focuscolor=colorscheme["lighth"],
         focusthickness=1,
-        borderwidth=2,
+        borderwidth=4,
     )
     style.map(
         "TButton",
@@ -67,7 +68,7 @@ def style(root):
         lightcolor=colorscheme["accent"],
         darkcolor=colorscheme["accent"],
         foreground=colorscheme["light"],
-        bordercolor=colorscheme["dark"],
+        bordercolor=colorscheme["accent"],
         focuscolor=colorscheme["accent"],
         borderwidth=2,
         font=header,
@@ -79,10 +80,22 @@ def style(root):
             ("active", colorscheme["accenth"]),
             ("disabled", colorscheme["lightgrey"]),
         ],
-        lightcolor=[("pressed", colorscheme["accenth"])],
-        darkcolor=[("pressed", colorscheme["accenth"])],
-        focuscolor=[("pressed", colorscheme["accent"])],
-        bordercolor=[("pressed", colorscheme["dark"])],
+        lightcolor=[
+            ("pressed", colorscheme["accenth"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        darkcolor=[
+            ("pressed", colorscheme["accenth"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        focuscolor=[
+            ("pressed", colorscheme["accent"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        bordercolor=[
+            ("pressed", colorscheme["dark"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
     )
     style.configure(
         "dark.TButton",
@@ -335,7 +348,21 @@ def style(root):
     style.configure(
         "Treeview",
         background=colorscheme["light"],
-        fieldbackground=colorscheme["lighth"],
+        fieldbackground=colorscheme["light"],
+        bordercolor=colorscheme["grey"],
+        font=font,
+    )
+    style.configure(
+        "Treeview.Cell",
+        background=colorscheme["light"],
+        fieldbackground=colorscheme["light"],
+        bordercolor=colorscheme["grey"],
+        font=font,
+    )
+    style.configure(
+        "Treeview.Heading",
+        background=colorscheme["lighth"],
+        fieldbackground=colorscheme["light"],
         bordercolor=colorscheme["grey"],
         font=font,
     )
@@ -416,6 +443,7 @@ def style(root):
 if __name__ == "__main__":
     root = tk.Tk()
     s = style(root)
-    print(s.layout("Treeview.Heading"))
+    print(s.layout("Treeview.treearea"))
+    print(s.element_options("Treeview.treearea"))
 
     root.mainloop()

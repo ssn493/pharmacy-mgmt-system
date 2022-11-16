@@ -103,12 +103,12 @@ customers = {
         ("age", INT),
         ("sex", VARCHAR),
         ("address", VARCHAR),
-        ("password", VARCHAR),
+        ("phone_no", INT),
     ],
 }
 
 orders = {
-    name: "orders",
+    name: "cust_orders",
     fields: [
         (
             "order_id",
@@ -129,6 +129,15 @@ orders = {
             FOREIGN_KEY("cust_id", customers[name], "cust_id"),
             "ON DELETE CASCADE ON UPDATE NO ACTION",
         ),
+    ],
+}
+
+emp = {
+    name: "employees",
+    fields: [
+        ("emp_id", VARCHAR, PRIMARY_KEY),
+        ('dept', VARCHAR),
+        ("password", VARCHAR),
     ],
 }
 
@@ -181,9 +190,12 @@ def search_med_by_name(medicine_name):
 
 
 def search_cust_by_name(cust_name):
-    cust_list = execute_sql(f"SELECT * FROM cust WHERE name LIKE {cust_name}%")
+    cust_list = execute_sql(f"SELECT * FROM {customers[name]} WHERE name LIKE {cust_name}%")
     return cust_list
 
+def search_cust_by_phone_no(phone_no):
+    cust_list = execute_sql(f"SELECT * FROM {customers[name]} WHERE CAST(phone_no AS TEXT) LIKE {phone_no}%")
+    return cust_list
 
 def filter_custs(name_cond, age_cond, sex_cond):
     rel_ops = "<>="
@@ -237,15 +249,19 @@ def show_order_details(order_id):
     )
     return list(medicine_details)
 
+def login_emp(emp_id, password):
+    stored_password = execute_sql(f'SELECT password FROM {emp[name]} WHERE emp_id={emp_id}')
+    if password == str(stored_password):
+        return True
+    else:
+        return False
 
-def init():
-    execute_sql("PRAGMA foreign_keys=on")
-    create_table(customers)
-    create_table(meds)
-    create_table(orders)
 
-
-init()
+execute_sql("PRAGMA foreign_keys=on")
+create_table(customers)
+create_table(meds)
+create_table(orders)
+create_table(emp)
 
 if __name__ == "__main__":
     conn.close()
