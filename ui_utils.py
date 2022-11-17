@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from pharmacy_backend import get_med_quantity
+from pharmacy_backend import check_med_availability
 import os
 
 
@@ -351,32 +351,40 @@ class medTable:
         self.num_rows += 1
         col_widgets = []
 
-        l = ttk.Label(self.rootframe, text=lst[0])
+        l = ttk.Label(self.rootframe, text=name)
         l.grid(row=self.num_rows, column=0, sticky="we")
 
         e = ttk.Entry(self.rootframe, style="Table.TEntry")
         e.grid(row=self.num_rows, column=1, sticky="we")
-
         c = ttk.Button(
             self.rootframe,
             text="Check",
             style="accent.TButton",
-            command=lambda: self.check_med_availability(l, e),
+            command=lambda: self.check_availability(l, e),
         )
-        e.grid(row=self.num_rows, column=1, sticky="we")
+        c.grid(row=self.num_rows, column=2, sticky="we")
 
         col_widgets.append(self.num_rows)
         col_widgets.append(l)
         col_widgets.append(e)
         col_widgets.append(c)
         self.row_widgets.append(col_widgets)
-        self.data.append(name)
+        self.data.append(
+            [
+                name,
+            ]
+        )
 
-    def check_med_availability(self, med_name_lbl, qty_entry):
-        if int(qty_entry.get()) < get_med_quantity(med_name_entry["text"]):
+    def check_availability(self, med_name_lbl, qty_entry):
+        if check_med_availability(med_name_lbl["text"], int(qty_entry.get())):
             med_name_lbl["style"] = "success.TLabel"
         else:
             med_name_lbl["style"] = "error.TLabel"
+
+    def get_data(self):
+        for index, row in enumerate(self.row_widgets):
+            self.data[index].append(row[2].get())
+        return self.data
 
     def grid(self, **kwargs):
         self.rootframe.grid(**kwargs)
@@ -385,7 +393,9 @@ class medTable:
 class EntrySuggestions:
     def __init__(self, root, onClick=False):
         self.root = root
+
         self.rootframe = ttk.Frame(root.master, style="dropdown.TFrame")
+        self.rootframe.bind("<FocusOut>", lambda event: self.hide())
         self.rootframe.lift(root)
         self.rootframe.place(
             in_=root,

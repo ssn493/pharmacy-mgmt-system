@@ -89,7 +89,7 @@ meds = {
         ("id", INT, PRIMARY_KEY, "AUTOINCREMENT"),
         ("name", VARCHAR),
         ("manufacturer", VARCHAR),
-        ("stock_quantity", INT),
+        ("stock_qty", INT),
         ("mrp", FLOAT),
         ("gst_percent", INT),
     ],
@@ -136,8 +136,21 @@ emp = {
     name: "employees",
     fields: [
         ("emp_id", VARCHAR, PRIMARY_KEY),
-        ('dept', VARCHAR),
+        ("dept", VARCHAR),
         ("password", VARCHAR),
+    ],
+}
+
+inv_orders = {
+    name: "inventory_order",
+    fields: [
+        ("order_id", INT, PRIMARY_KEY, "AUTOINCREMENT"),
+        ("order_name", VARCHAR),
+        ("order_date", DATE),
+        ("med_id", INT),
+        ("quantity", INT),
+        ("status", VARCHAR),
+        (FOREIGN_KEY("med_id", meds[name], "id"), " ON DELETE CASCADE"),
     ],
 }
 
@@ -154,48 +167,69 @@ receipt = """
                         NET AMOUNT:{6}
 
     """
-
-
-def register_new_customer(data):
-    insert_from_dict(customers[name], data)
-
-
-def add_new_medicines(data):
-    insert_from_dict(meds[name], data)
-
-
-def get_med_quantity(med_name):
-    med_qty = execute_sql(f'SELECT stock_quantity FROM {meds[name]} WHERE name = {med_name}')
-    med_qty = int(med_qty)
-    return med_qty
-
-
 def search_by_field(table, search_attr, value):
     data_list = list(
         execute_sql(f"SELECT * FROM {table[name]} WHERE {search_attr} LIKE '{value}%'")
     )
-    print(data_list)
     return data_list
 
 
 def get_table(table):
     data_list = list(execute_sql(f"SELECT * FROM {table[name]}"))
-    print(data_list)
     return data_list
 
 
+def register_new_customer(name, age, sex, addr, ph_no):
+    execute_sql(
+        f"INSERT INTO {customers[name]} VALUES ('{name}',{age},'{sex}','{stock_qty}',{ph_no}) "
+    )
+
+def delete_customer(cust_id):
+    execute_sql(
+        f"DELETE FROM {customers[name]} WHERE cust_id={cust_id};"
+    )
+
+def add_new_medicine(med_id, name, manufacturer, stock_qty, mrp, gst_percent):
+    execute_sql(
+        f"INSERT INTO {meds[name]} VALUES ({med_id},'{name}','{manufacturer}',{stock_qty},{mrp},{gst_percent}) "
+    )
+
+def delete_medicine(med_id):
+    execute_sql(
+        f"DELETE FROM {meds[name]} WHERE med_id={med_id};"
+    )
+
+
+
+# ui helper functions:
+def get_med_quantity(med_name):
+    med_qty = execute_sql(f"SELECT stock_qty FROM {meds[name]} WHERE name = {med_name}")
+    med_qty = int(med_qty)
+    return med_qty
+
+
+def check_med_availability(med_name, qty):
+    return get_med_quantity(med_name) >= qty
+
+
 def search_med_by_name(medicine_name):
-    med_list = execute_sql(f"SELECT * FROM meds WHERE name LIKE {medicine_name}%")
+    med_list = execute_sql(f"SELECT * FROM meds WHERE name LIKE '{medicine_name}%'")
     return med_list
 
 
 def search_cust_by_name(cust_name):
-    cust_list = execute_sql(f"SELECT * FROM {customers[name]} WHERE name LIKE {cust_name}%")
+    cust_list = execute_sql(
+        f"SELECT * FROM {customers[name]} WHERE name LIKE '{cust_name}%'"
+    )
     return cust_list
 
+
 def search_cust_by_phone_no(phone_no):
-    cust_list = execute_sql(f"SELECT * FROM {customers[name]} WHERE phone_no={phone_no}")
+    cust_list = execute_sql(
+        f"SELECT * FROM {customers[name]} WHERE phone_no={phone_no}"
+    )
     return cust_list
+
 
 def filter_custs(name_cond, age_cond, sex_cond):
     rel_ops = "<>="
@@ -224,7 +258,7 @@ def filter_custs(name_cond, age_cond, sex_cond):
         )
 
 
-def create_new_order(cust_id, medicine_data, txn_date):
+def cust_create_new_order(cust_id, medicine_data, txn_date):
     if execute_sql(f"SELECT * FROM {orders[name]}") == []:
         order_id = 0000
     else:
@@ -236,26 +270,69 @@ def create_new_order(cust_id, medicine_data, txn_date):
         )
 
 
-
-def show_past_orders(cust_id):
+def cust_show_past_orders(cust_id):
     order_list = execute_sql(
         f"SELECT DISTINCT order_id FROM {orders[name]} WHERE cust_id={cust_id}"
     )
     return order_list
 
 
-def show_order_details(order_id):
+def cust_show_order_details(order_id):
     medicine_details = execute_sql(
         f"SELECT {meds[name]}.name, {orders[name]}.qty FROM {meds[name]},{orders[name]} WHERE {meds[name]}.id={orders[name]}.med_id AND {orders[name]}.order_id={order_id}"
     )
     return list(medicine_details)
 
+
 def login_emp(emp_id, password):
-    stored_password = execute_sql(f'SELECT password FROM {emp[name]} WHERE emp_id={emp_id}')
+    stored_password = execute_sql(
+        f"SELECT password FROM {emp[name]} WHERE emp_id={emp_id}"
+    )
     if password == str(stored_password):
         return True
     else:
         return False
+
+
+def place_inv_order(medid, med_name, qty):
+    global cursor
+    select_cmd = f"SELECT mrp FROM {meds[name]} WHERE med_id={med_id};"
+    cursor.execute(select_cmd)
+    val = cursor.fetchone()[0]
+    amt = val * qty
+    insert_cmd = f"""INSERT INTO {inv_orders[name]} (order_name,order_date,item_id,quantity,order_amount,status) 
+                    VALUES('{med_name}', '{datetime.date.today()}', 
+                    {med_id},{qty},{amt} ,'Pending' );"""
+    # print(insert_cmd)
+    cursor.execute(insert_cmd)
+    conn.commit()
+
+
+def change_inv_order_status(order_id, med_id):
+    global cursor
+    update_cmd = (
+        f"UPDATE {inv_orders[name]} SET status='Received' WHERE order_id={order_id};"
+    )
+    select_cmd = f"SELECT stock_qty,amount FROM {meds[name]} WHERE med_id={med_id};"
+    # write select cmd for fetching qty of order placed from inventory orders
+    # and add it with stock_qty and update it in items table
+    select2_cmd = f"SELECT quantity FROM {inv_orders[name]}  WHERE order_id={order_id};"
+
+    cursor.execute(select_cmd)
+    result = cursor.fetchone()
+    val1 = result[0]
+    amt = result[1]
+
+    cursor.execute(select2_cmd)
+    val2 = cursor.fetchone()[0]
+
+    updated_qty = val1 + val2
+    updated_amt = updated_qty * amt
+    update2_cmd = f"UPDATE {meds[name]}  SET stock_qty={updated_qty} , total_amount= {updated_amt} WHERE med_id={med_id};"
+
+    cursor.execute(update_cmd)
+    cursor.execute(update2_cmd)
+    conn.commit()
 
 
 execute_sql("PRAGMA foreign_keys=on")
@@ -263,6 +340,7 @@ create_table(customers)
 create_table(meds)
 create_table(orders)
 create_table(emp)
+create_table(inv_orders)
 
 if __name__ == "__main__":
     conn.close()
