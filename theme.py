@@ -6,7 +6,7 @@ colorscheme = {
     "darkh": "#343333",
     "grey": "#535757",
     "midgrey": "#c0c3c3",
-    "lightgrey": "#dadee2",
+    "lightgrey": "#dadee0",
     # "lightgrey": "#dfe2e7",
     "light": "#fffefe",
     "lighth": "#ececee",
@@ -525,7 +525,7 @@ def style(root):
 
     style.configure(
         "dropdown.TFrame",
-        background=colorscheme["lighth"],
+        background=colorscheme["lightgrey"],
         lightcolor=colorscheme["lighth"],
         darkcolor=colorscheme["lighth"],
     )

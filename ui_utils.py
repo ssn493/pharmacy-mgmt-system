@@ -312,7 +312,7 @@ class Table:
         # code for creating table
         for j in range(self.num_cols):
 
-            h = ttk.Label(root, text=columns[j], style='THeading.TLabel')
+            h = ttk.Label(root, text=columns[j], style="THeading.TLabel")
             h.grid(row=self.num_rows, column=j, sticky="we")
 
     def ins_row(self, lst):
@@ -321,7 +321,7 @@ class Table:
         for j in range(self.num_cols):
 
             e = ttk.Entry(self.rootframe)
-            e.grid(row=self.num_rows, column=j, sticky="we", style='Table.TEntry')
+            e.grid(row=self.num_rows, column=j, sticky="we", style="Table.TEntry")
             e.insert(END, lst[j])
             col_widgets.append(e)
         self.row_widgets.append(col_widgets)
@@ -329,34 +329,40 @@ class Table:
     def grid(**kwargs):
         self.rootframe.grid(**kwargs)
 
+
 class medTable:
-    def __init__(self, root, columns=['Name', 'Qty', 'Availability']):
+    def __init__(self, root, columns=["Name", "Qty", "Availability"]):
         self.rootframe = ttk.Frame(root)
         grid_config(self.rootframe, cols=len(columns))
         self.rootframe.grid_columnconfigure(0, weight=3)
         self.num_rows = 0
         self.num_cols = 3
         self.row_widgets = []
-    
+
         # code for creating table
         for j in range(self.num_cols):
 
-            h = ttk.Label(self.rootframe, text=columns[j], style='THeading.TLabel')
+            h = ttk.Label(self.rootframe, text=columns[j], style="THeading.TLabel")
             h.grid(row=self.num_rows, column=j, sticky="we")
 
         self.data = []
 
-    def ins_row(self, lst):
+    def ins_row(self, name):
         self.num_rows += 1
         col_widgets = []
 
         l = ttk.Label(self.rootframe, text=lst[0])
         l.grid(row=self.num_rows, column=0, sticky="we")
 
-        e = ttk.Entry(self.rootframe, style='Table.TEntry')
+        e = ttk.Entry(self.rootframe, style="Table.TEntry")
         e.grid(row=self.num_rows, column=1, sticky="we")
 
-        c = ttk.Button(self.rootframe,text='Check', style='accent.TButton', command=lambda: self.check_med_availability(l, e))
+        c = ttk.Button(
+            self.rootframe,
+            text="Check",
+            style="accent.TButton",
+            command=lambda: self.check_med_availability(l, e),
+        )
         e.grid(row=self.num_rows, column=1, sticky="we")
 
         col_widgets.append(self.num_rows)
@@ -364,25 +370,32 @@ class medTable:
         col_widgets.append(e)
         col_widgets.append(c)
         self.row_widgets.append(col_widgets)
-        self.data.append(lst)
+        self.data.append(name)
 
-    def check_med_availability(self, med_name_lbl,qty_entry ):
-        if int(qty_entry.get()) < get_med_quantity(med_name_entry['text']):
-            med_name_lbl['style'] = 'success.TLabel'
+    def check_med_availability(self, med_name_lbl, qty_entry):
+        if int(qty_entry.get()) < get_med_quantity(med_name_entry["text"]):
+            med_name_lbl["style"] = "success.TLabel"
         else:
-            med_name_lbl['style'] = 'error.TLabel'
+            med_name_lbl["style"] = "error.TLabel"
 
-    def grid(self,**kwargs):
+    def grid(self, **kwargs):
         self.rootframe.grid(**kwargs)
 
 
-class Dropdown:
-    def __init__(self, root):
-        self.rootframe = ttk.Frame(root, style='dropdown.TFrame')
-        self.rootframe.lift()
-        self.rootframe.place(relx=0.8, rely=0.5, in_=root)
+class EntrySuggestions:
+    def __init__(self, root, onClick=False):
+        self.root = root
+        self.rootframe = ttk.Frame(root.master, style="dropdown.TFrame")
+        self.rootframe.lift(root)
+        self.rootframe.place(
+            in_=root,
+            relx=0,
+            rely=1,
+            relwidth=1,
+        )
         self.info = self.rootframe.place_info()
-        
+        self.selected_val = None
+        self.click_fn = onClick
         self.items = []
         self.data = []
 
@@ -390,17 +403,37 @@ class Dropdown:
         self.rootframe.place_forget()
 
     def show(self):
+        self.rootframe.lift()
         self.rootframe.place(self.info)
 
     def delete_all(self):
         if self.items != []:
             for item in self.items:
                 item.destroy()
+        self.items.clear()
 
-    def update(self, cmd):
+    def update(self):
         if len(self.items) != len(self.data):
             self.hide()
-            for element in self.data:
-                e = ttk.Button(self.rootframe, text = element, command=lambda: cmd(element))
+            self.delete_all()
+            val = ""
+            for i, val in enumerate(self.data):
+                e = ttk.Button(
+                    self.rootframe,
+                    text=val,
+                    command=lambda indx=i: self.on_sel(indx),
+                    style="borderless.TButton",
+                )
+                e.pack(fill="x", expand=1)
+                self.items.append(e)
             self.show()
 
+    def on_sel(self, i):
+        self.root.delete(0, tk.END)
+        self.root.insert(0, self.data[i])
+
+    # def _sel_data(self, widget):
+    #     index = self.items.index(widget)
+    #     self.selected_val = self.data[index]
+    #     if self.click_fn:
+    #         self.click_fn(self.selected_val)
