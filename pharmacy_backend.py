@@ -27,23 +27,20 @@ def execute_sql(sql):
 
 
 def close():
+    global conn
     conn.commit()
     conn.close()
 
 
-def data_dict_fmt(raw_data, fieldnames):
-    data = {key: [] for key in fieldnames}
-    data["raw_data"] = raw_data
-    for row in raw_data:
-        for index, attr in enumerate(row):
-            data[fieldnames[index]].append(attr[0])
-    return data
+def commit():
+    global conn
+    conn.commit()
 
 
 def get_field_names(table):
     field_names = []
     for field_data in table[fields]:
-        if len(field_data) > 1:
+        if len(field_data) > 1 and not field_data[0].startswith('FOREIGN KEY'):
             field_names.append(field_data[0])
     return field_names
 
@@ -63,15 +60,12 @@ def create_table(table):
     cursor.execute(create_cmd)
 
 
-def select_statement(table_name, cols="*", condition="*"):
+def drop_table(table):
     global cursor
-    if condition == "*":
-        sel_cmd = f"SELECT {cols} FROM {table_name}"
-    else:
-        sel_cmd = f"SELECT {cols} FROM {table_name} WHERE {condition}"
-    cursor.execute(sel_cmd)
-    data = cursor.fetchall()
-    return data
+    cursor.execute(f"DROP TABLE IF EXISTS {table[name]}")
+    output = cursor.fetchall()
+    del output
+    commit()
 
 
 def insert_from_dict(table, data_dict):
@@ -82,6 +76,17 @@ def insert_from_dict(table, data_dict):
     print(ins_cmd)
     cursor.execute(ins_cmd)
 
+
+# Unused code
+# def select_statement(table_name, cols="*", condition="*"):
+#     global cursor
+#     if condition == "*":
+#         sel_cmd = f"SELECT {cols} FROM {table_name}"
+#     else:
+#         sel_cmd = f"SELECT {cols} FROM {table_name} WHERE {condition}"
+#     cursor.execute(sel_cmd)
+#     data = cursor.fetchall()
+#     return data
 
 meds = {
     name: "meds",
@@ -167,6 +172,8 @@ receipt = """
                         NET AMOUNT:{6}
 
     """
+
+
 def search_by_field(table, search_attr, value):
     data_list = list(
         execute_sql(f"SELECT * FROM {table[name]} WHERE {search_attr} LIKE '{value}%'")
@@ -175,7 +182,8 @@ def search_by_field(table, search_attr, value):
 
 
 def get_table(table):
-    data_list = list(execute_sql(f"SELECT * FROM {table[name]}"))
+    table_name = table[name] if isinstance(table, dict) else table
+    data_list = list(execute_sql(f"SELECT * FROM {table_name}"))
     return data_list
 
 
@@ -184,27 +192,27 @@ def register_new_customer(name, age, sex, addr, ph_no):
         f"INSERT INTO {customers[name]} VALUES ('{name}',{age},'{sex}','{stock_qty}',{ph_no}) "
     )
 
+
 def delete_customer(cust_id):
-    execute_sql(
-        f"DELETE FROM {customers[name]} WHERE cust_id={cust_id};"
-    )
+    execute_sql(f"DELETE FROM {customers[name]} WHERE cust_id={cust_id};")
+
 
 def add_new_medicine(med_id, name, manufacturer, stock_qty, mrp, gst_percent):
     execute_sql(
         f"INSERT INTO {meds[name]} VALUES ({med_id},'{name}','{manufacturer}',{stock_qty},{mrp},{gst_percent}) "
     )
 
-def delete_medicine(med_id):
-    execute_sql(
-        f"DELETE FROM {meds[name]} WHERE med_id={med_id};"
-    )
 
+def delete_medicine(med_id):
+    execute_sql(f"DELETE FROM {meds[name]} WHERE med_id={med_id};")
 
 
 # ui helper functions:
 def get_med_quantity(med_name):
-    med_qty = execute_sql(f"SELECT stock_qty FROM {meds[name]} WHERE name = {med_name}")
-    med_qty = int(med_qty)
+    med_qty = execute_sql(
+        f"SELECT stock_qty FROM {meds[name]} WHERE name = '{med_name}'"
+    )
+    med_qty = int(med_qty[0])
     return med_qty
 
 
@@ -231,31 +239,31 @@ def search_cust_by_phone_no(phone_no):
     return cust_list
 
 
-def filter_custs(name_cond, age_cond, sex_cond):
-    rel_ops = "<>="
-    if name_cond == "" or not name_cond[0] in rel_ops:
-        name_cond_str = ""
-        n = False
-    else:
-        name_cond_str = "Name {}".format(name_cond)
-    if age_cond == "" or not age_cond[0] in rel_ops:
-        age_cond_str = ""
-        a = False
-    else:
-        age_cond_str = "Age {}".format(age_cond)
+# def filter_custs(name_cond, age_cond, sex_cond):
+#     rel_ops = "<>="
+#     if name_cond == "" or not name_cond[0] in rel_ops:
+#         name_cond_str = ""
+#         n = False
+#     else:
+#         name_cond_str = "Name {}".format(name_cond)
+#     if age_cond == "" or not age_cond[0] in rel_ops:
+#         age_cond_str = ""
+#         a = False
+#     else:
+#         age_cond_str = "Age {}".format(age_cond)
 
-    if sex_cond == "" or not sex_cond[0] in rel_ops:
-        sex_cond_str = ""
-        s = False
-    else:
-        sex_cond_str = "Sex {}".format(sex_cond)
+#     if sex_cond == "" or not sex_cond[0] in rel_ops:
+#         sex_cond_str = ""
+#         s = False
+#     else:
+#         sex_cond_str = "Sex {}".format(sex_cond)
 
-    if not (n and a and s):
-        cmd = "SELECT * FROM custs"
-    else:
-        cmd = (
-            f"SELECT * FROM custs WHERE {name_cond_str} {age_cond_str} {sex_cond_str};"
-        )
+#     if not (n and a and s):
+#         cmd = "SELECT * FROM custs"
+#     else:
+#         cmd = (
+#             f"SELECT * FROM custs WHERE {name_cond_str} {age_cond_str} {sex_cond_str};"
+#         )
 
 
 def cust_create_new_order(cust_id, medicine_data, txn_date):
@@ -294,7 +302,7 @@ def login_emp(emp_id, password):
         return False
 
 
-def place_inv_order(medid, med_name, qty):
+def place_inv_order(med_id, med_name, qty):
     global cursor
     select_cmd = f"SELECT mrp FROM {meds[name]} WHERE med_id={med_id};"
     cursor.execute(select_cmd)
@@ -335,12 +343,31 @@ def change_inv_order_status(order_id, med_id):
     conn.commit()
 
 
-execute_sql("PRAGMA foreign_keys=on")
-create_table(customers)
-create_table(meds)
-create_table(orders)
-create_table(emp)
-create_table(inv_orders)
+def create_backend():
+    execute_sql("PRAGMA foreign_keys=on")
+    create_table(customers)
+    create_table(meds)
+    create_table(orders)
+    create_table(emp)
+    create_table(inv_orders)
+
+
+def backend_reset():
+    drop_table(customers)
+    drop_table(meds)
+    drop_table(orders)
+    drop_table(emp)
+    drop_table(inv_orders)
+
+    execute_sql("PRAGMA foreign_keys=on")
+
+    create_table(customers)
+    create_table(meds)
+    create_table(orders)
+    create_table(emp)
+    create_table(inv_orders)
+
 
 if __name__ == "__main__":
+    backend_reset()
     conn.close()

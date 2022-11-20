@@ -147,8 +147,8 @@ class pos_page:
         )
         self.new_cust_warn_label.grid(
             row=10,
-            column=3,
-            columnspan=2,
+            column=0,
+            columnspan=8,
             ipadx=6,
             ipady=6,
             padx=10,
@@ -189,7 +189,7 @@ class pos_page:
         p = lambda: print(self.med_table.get_data())
         self.cnf_med_quantity = ttk.Button(
             self.medicine_details_page,
-            text="Confirm Medication Quantity",
+            text="Confirm Medicine Details",
             style="accent.TButton",
             command=p,
         )
@@ -374,25 +374,17 @@ class about_page:
 class inventory_order_page:
     def __init__(self, master, root_window):
         self.rootframe = ttk.Frame(master)
-        self.note = ttk.Notebook(self.rootframe)
+        self.note = HorizontalNavMenu(self.rootframe)
 
-        self.filters = ttk.Frame(self.note)
-        self.view = ttk.Frame(self.note)
+        self.filters = ttk.Frame(self.note.content_frame)
+        self.view = ttk.Frame(self.note.content_frame)
 
         grid_config(self.filters)
         grid_config(self.view)
 
         self.invt_table = easy_treeview(
             self.view,
-            columns=[
-                "Order ID",
-                "Order Name",
-                "Order Date",
-                "Item ID",
-                "Quantity",
-                "Amount",
-                "Status",
-            ],
+            columns=get_field_names(inv_orders),
         )
         self.invt_table.grid(
             row=0,
@@ -420,29 +412,27 @@ class inventory_order_page:
         )
         self.reset_btn.grid(row=7, column=7, padx=10, pady=6, sticky="sew")
 
-        l1 = ttk.Label(self.filters, text="Item Id", style="small.TLabel")
+        l1 = ttk.Label(self.filters, text="Medicine Id", style="small.TLabel")
         l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw")
 
-        setattr(self, "item_id", ttk.Entry(self.filters))
-        getattr(self, "item_id").grid(
+        self.med_id_filter = ttk.Entry(self.filters)
+        self.med_id_filter.grid(
             row=1, column=0, padx=10, pady=2, sticky="sew", columnspan=8
         )
 
-        l2 = ttk.Label(self.filters, text="Item Name", style="small.TLabel")
+        l2 = ttk.Label(self.filters, text="Medicine Name", style="small.TLabel")
         l2.grid(row=2, column=0, padx=10, pady=2, sticky="sw")
 
-        setattr(self, "item_name", ttk.Entry(self.filters))
-        getattr(self, "item_name").grid(
+        self.med_name_filter = ttk.Entry(self.filters)
+        self.med_name_filter.grid(
             row=3, column=0, padx=10, pady=2, sticky="sew", columnspan=8
         )
 
         l3 = ttk.Label(self.filters, text="Status", style="small.TLabel")
         l3.grid(row=4, column=0, padx=10, pady=2, sticky="sw")
 
-        setattr(self, "status", ttk.Entry(self.filters))
-        getattr(self, "status").grid(
-            row=5, column=0, padx=10, pady=2, sticky="sew", columnspan=8
-        )
+        self.status = ttk.Entry(self.filters)
+        self.status.grid(row=5, column=0, padx=10, pady=2, sticky="sew", columnspan=8)
 
         self.show_table()
 
@@ -461,7 +451,6 @@ class inventory_order_page:
         self.note.add(self.view, text="Table View")
         self.note.add(self.filters, text="Filters")
         self.note.pack(fill="both", expand=1, padx=10)
-        self.note.enable_traversal()
 
         self.rootframe.pack(fill="both", expand=1)
 
@@ -483,9 +472,9 @@ class inventory_order_page:
 
     def show_table(self):
         self.order_complete_btn.config(state=tk.DISABLED)
-        getattr(self, "item_id").delete(0, tk.END)
-        getattr(self, "item_name").delete(0, tk.END)
-        getattr(self, "status").delete(0, tk.END)
+        self.med_id_filter.delete(0, tk.END)
+        self.med_name_filter.delete(0, tk.END)
+        self.status.delete(0, tk.END)
         for item in self.invt_table.get_children():
             self.invt_table.delete(item)
         for row in get_table("inventory_order"):
@@ -507,69 +496,64 @@ class inventory_order_page:
         o.show_table()
         i.show_table()
 
-        def orderRecievedBox(self):
-            top = tk.Toplevel(root)
-            top.geometry("300x150")
-            rootframe = ttk.Frame(top)
-            rootframe.pack(fill="both")
-            grid_config(rootframe)
+    def orderRecievedBox(self):
+        top = tk.Toplevel(self.rootframe)
+        top.geometry("300x150")
+        rootframe = ttk.Frame(top)
+        rootframe.pack(fill="both")
+        grid_config(rootframe)
 
-            selectedItem = self.invt_table.selection()[0]
-            order_id = self.invt_table.item(selectedItem)["values"][0]
-            item_name = self.invt_table.item(selectedItem)["values"][1]
-            item_id = self.invt_table.item(selectedItem)["values"][3]
+        selectedItem = self.invt_table.selection()[0]
+        order_id = self.invt_table.item(selectedItem)["values"][0]
+        item_name = self.invt_table.item(selectedItem)["values"][1]
+        item_id = self.invt_table.item(selectedItem)["values"][3]
 
-            l1 = ttk.Label(
-                rootframe,
-                text=f"Confirm Order {order_id}: {item_id}-{item_name} Received",
-                style="small.TLabel",
-            )
-            l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw", columnspan=6)
+        l1 = ttk.Label(
+            rootframe,
+            text=f"Confirm Order {order_id}: {item_id}-{item_name} Received",
+            style="small.TLabel",
+        )
+        l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw", columnspan=6)
 
-            confirm_row_btn = ttk.Button(
-                rootframe,
-                text="Yes",
-                style="accent.TButton",
-                command=lambda: self.orderReceived(top),
-            )
-            confirm_row_btn.grid(
-                row=7, column=0, padx=10, pady=6, sticky="sew", columnspan=2
-            )
+        confirm_row_btn = ttk.Button(
+            rootframe,
+            text="Yes",
+            style="accent.TButton",
+            command=lambda: self.orderReceived(top),
+        )
+        confirm_row_btn.grid(
+            row=7, column=0, padx=10, pady=6, sticky="sew", columnspan=2
+        )
 
-            cancel_button = ttk.Button(
-                rootframe,
-                text="No",
-                style="accent.TButton",
-                command=lambda: self.close_win(top),
-            )
-            cancel_button.grid(
-                row=7, column=2, padx=10, pady=6, sticky="sew", columnspan=2
-            )
+        cancel_button = ttk.Button(
+            rootframe,
+            text="No",
+            style="accent.TButton",
+            command=lambda: self.close_win(top),
+        )
+        cancel_button.grid(row=7, column=2, padx=10, pady=6, sticky="sew", columnspan=2)
 
-        def all_filter(self, row):
-            d = {"item_id": 3, "item_name": 1, "status": 6}
-            filter_list = ["item_id", "item_name", "status"]
-            val = all(
-                str(row[d[f]]) == getattr(self, f).get() or getattr(self, f).get() == ""
-                for f in filter_list
-            )
-            return val
+    def all_filter(self, row):
+        d = {"item_id": 3, "item_name": 1, "status": 6}
+        filter_list = ["item_id", "item_name", "status"]
+        val = all(str(row[d[f]]) == f.get() or f.get() == "" for f in filter_list)
+        return val
 
-        def select_from_filters(self):
-            self.invt_table.delete(*self.invt_table.get_children())
-            for row in get_table("inventory_order"):
-                if self.all_filter(row):
-                    self.invt_table.insert("", "end", values=list(row))
-            prev_tab(self.note)
+    def select_from_filters(self):
+        self.invt_table.delete(*self.invt_table.get_children())
+        for row in get_table("inventory_order"):
+            if self.all_filter(row):
+                self.invt_table.insert("", "end", values=list(row))
+        self.note.prev_page()
 
 
 class item_page:
     def __init__(self, master, root_window):
         self.rootframe = ttk.Frame(master)
-        self.note = ttk.Notebook(self.rootframe)
+        self.note = HorizontalNavMenu(self.rootframe)
 
-        self.filters = ttk.Frame(self.note)
-        self.view = ttk.Frame(self.note)
+        self.filters = ttk.Frame(self.note.content_frame)
+        self.view = ttk.Frame(self.note.content_frame)
 
         grid_config(self.filters)
         grid_config(self.view)
@@ -586,14 +570,7 @@ class item_page:
 
         self.item_table = easy_treeview(
             self.view,
-            columns=[
-                "Item Id",
-                "Item Name",
-                "Stock Quantity",
-                "Amount",
-                "Total Amount",
-                "Description",
-            ],
+            columns=get_field_names(meds),
         )
         self.item_table.grid(
             row=2,
@@ -606,11 +583,6 @@ class item_page:
             ipady=4,
             sticky="nswe",
         )
-
-        self.edit_row_btn = ttk.Button(
-            self.view, text="Edit row", style="accent.TButton"
-        )
-        self.edit_row_btn.grid(row=7, column=0, padx=10, pady=6, sticky="sew")
 
         self.place_order = ttk.Button(
             self.view, text="Place Order", command=self.placeOrderBox, state=tk.DISABLED
@@ -633,36 +605,18 @@ class item_page:
         l1 = ttk.Label(self.filters, text="Item Id", style="small.TLabel")
         l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw")
 
-        setattr(self, "item_id", ttk.Entry(self.filters))
-        getattr(self, "item_id").grid(
+        self.med_id_filter = ttk.Entry(self.filters)
+        self.med_id_filter.grid(
             row=1, column=0, padx=10, pady=2, sticky="sw", columnspan=8
         )
 
         l2 = ttk.Label(self.filters, text="Item Name", style="small.TLabel")
         l2.grid(row=2, column=0, padx=10, pady=2, sticky="sw")
 
-        setattr(self, "item_name", ttk.Entry(self.filters))
-        getattr(self, "item_name").grid(
-            row=3, column=0, padx=10, pady=2, sticky="sw", columnspan=8
-        )
-
-        l3 = ttk.Label(self.filters, text="Sex", style="small.TLabel")
-        l3.grid(row=4, column=4, padx=10, pady=2, sticky="sw")
-
-        setattr(self, "date", ttk.Entry(self.filters))
-        getattr(self, "date").grid(
-            row=3, column=0, padx=10, pady=2, sticky="sw", columnspan=8
-        )
-
-        l4 = ttk.Label(self.filters, text="Address", style="small.TLabel")
-        l4.grid(row=4, column=0, padx=10, pady=2, sticky="sw")
+        self.item_name = ttk.Entry(self.filters)
+        self.item_name.grid(row=3, column=0, padx=10, pady=2, sticky="sw", columnspan=8)
 
         self.show_table()
-
-        self.addr_entry = ttk.Entry(self.filters)
-        self.addr_entry.grid(
-            row=5, column=0, padx=10, pady=2, columnspan=8, sticky="ew"
-        )
 
         self.apply_btn = ttk.Button(
             self.filters, text="Apply Filters", style="accent.TButton"
@@ -676,7 +630,6 @@ class item_page:
         self.note.add(self.view, text="Table View")
         self.note.add(self.filters, text="Filters")
         self.note.pack(fill="both", expand=1, padx=10)
-        self.note.enable_traversal()
 
         self.rootframe.pack(fill="both", expand=1)
 
@@ -689,7 +642,7 @@ class item_page:
         self.delete_row_btn.config(state=tk.DISABLED)
         for item in self.item_table.get_children():
             self.item_table.delete(item)
-        for row in get_table("items"):
+        for row in get_table(meds):
             self.item_table.insert("", tk.END, values=row)
 
     def searchItem(self, a):
@@ -706,10 +659,10 @@ class item_page:
         top.destroy()
 
     def get_order_data(self, e1, e2, e3, top):
-        item_num = int(e1.get())
-        item_name = e2.get()
+        med_id = int(e1.get())
+        med_name = e2.get()
         qty = int(e3.get())
-        place_order(item_num, item_name, qty)
+        place_inv_order(med_id, med_name, qty)
         self.close_win(top)
         o.show_table()
 
@@ -724,7 +677,7 @@ class item_page:
         i.show_table()
 
     def addItemBox(self):
-        top = tk.Toplevel(root)
+        top = tk.Toplevel(self.rootframe)
         top.geometry("750x350")
         rootframe = ttk.Frame(top)
         rootframe.pack(fill="both", expand=1)
@@ -774,23 +727,23 @@ class item_page:
             style="accent.TButton",
             command=lambda: self.close_win(top),
         )
-        cancel_button.grid(row=11, column=5, padx=10, pady=6, sticky="sew")
+        cancel_button.grid(row=10, column=5, padx=10, pady=6, sticky="sew")
 
-    def delete_item_data(self, item_id, top):
-        deleteItemfromDB(item_id)
+    def delete_item_data(self, med_id, top):
+        delete_medicine(med_id)
         self.close_win(top)
         i.show_table()
         o.show_table()
 
     def deleteItemBox(self):
-        top = tk.Toplevel(root)
+        top = tk.Toplevel(self.rootframe)
         top.geometry("750x250")
         rootframe = ttk.Frame(top)
         rootframe.pack(fill="both", expand=1)
         grid_config(rootframe)
 
         selectedItem = self.item_table.selection()[0]
-        item_id = self.item_table.item(selectedItem)["values"][0]
+        med_id = self.item_table.item(selectedItem)["values"][0]
 
         l1 = ttk.Label(
             rootframe, text="Do you want to delete item?", style="small.TLabel"
@@ -801,7 +754,7 @@ class item_page:
             rootframe,
             text="Yes",
             style="accent.TButton",
-            command=lambda: self.delete_item_data(item_id, top),
+            command=lambda: self.delete_item_data(med_id, top),
         )
         confirm_row_btn.grid(
             row=7, column=0, padx=10, pady=6, sticky="sew", columnspan=2
@@ -816,7 +769,7 @@ class item_page:
         cancel_button.grid(row=7, column=2, padx=10, pady=6, sticky="sew", columnspan=2)
 
     def placeOrderBox(self):
-        top = tk.Toplevel(root)
+        top = tk.Toplevel(self.rootframe)
         top.geometry("750x250")
         rootframe = ttk.Frame(top)
         rootframe.pack(fill="both", expand=1)
@@ -826,14 +779,14 @@ class item_page:
         item_id = self.item_table.item(selectedItem)["values"][0]
         item_name = self.item_table.item(selectedItem)["values"][1]
 
-        l1 = ttk.Label(rootframe, text="Item Id", style="small.TLabel")
+        l1 = ttk.Label(rootframe, text="Medicine Id", style="small.TLabel")
         l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw")
 
         e1 = ttk.Entry(rootframe)
         e1.insert(0, item_id)
         e1.grid(row=1, column=0, padx=10, pady=2, sticky="sew", columnspan=8)
 
-        l2 = ttk.Label(rootframe, text=f"Item Name", style="small.TLabel")
+        l2 = ttk.Label(rootframe, text=f"Medicine Name", style="small.TLabel")
         l2.grid(row=2, column=0, padx=10, pady=2, sticky="sw")
 
         e2 = ttk.Entry(rootframe)
@@ -886,5 +839,34 @@ def main():
     return root
 
 
+def devel_run_pages(*pages, menu_orient="vertical"):
+    root = tk.Tk()
+
+    s = style(root)
+
+    # a = login_page(root)
+    if menu_orient == "vertical":
+        note = VerticalNavMenu(root, menu_button=True)
+    elif menu_orient == "horizontal":
+        note = HorizontalNavMenu(root, menu_button=False)
+    else:
+        note = None
+
+    pos = pos_page(master=note.content_frame, root_window=root)
+    abt = about_page(master=note.content_frame, root_window=root)
+    items = item_page(master=note.content_frame, root_window=root)
+    invt = inventory_order_page(master=note.content_frame, root_window=root)
+
+    note.add(pos.as_tab(), text="New Order")
+    note.add(items.as_tab(), text="Inventory")
+    note.add(invt.as_tab(), text="Inventory Orders")
+    note.add(abt.as_tab(), text="About")
+    note.add(ttk.Frame(), text="Quit", custom_cmd=abt.quit_app)
+    note.pack(fill="both", expand=1)
+
+    root.mainloop()
+    return root
+
+
 if __name__ == "__main__":
-    main()
+    devel_run_pages()

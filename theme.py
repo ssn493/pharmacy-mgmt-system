@@ -191,9 +191,9 @@ def style(root):
     )
     style.configure(
         "TableHeader.TLabel",
-        padding=6,
-        bordercolor=colorscheme["grey"],
-        borderwidth=2,
+        padding=(0,10),
+        bordercolor=colorscheme["lighth"],
+        borderwidth=0,
         font=bold,
     )
     style.configure(
@@ -283,31 +283,6 @@ def style(root):
             ("disabled", colorscheme["lightgrey"]),
         ],
         lightcolor=[("focus", colorscheme["light"])],
-    )
-
-    style.layout(
-        "TCheckbutton",
-        [
-            (
-                "Checkbutton.padding",
-                {
-                    "sticky": "nswe",
-                    "children": [
-                        (
-                            "Checkbutton.indicator",
-                            {"side": "top", "sticky": "s"},
-                        ),
-                        (
-                            "Checkbutton.focus",
-                            {
-                                "side": "top",
-                                "sticky": "nswe",
-                            },
-                        ),
-                    ],
-                },
-            )
-        ],
     )
 
     style.configure(
@@ -524,10 +499,42 @@ def style(root):
     )
 
     style.configure(
-        "dropdown.TFrame",
+        "suggestions.TFrame",
         background=colorscheme["lightgrey"],
         lightcolor=colorscheme["lighth"],
         darkcolor=colorscheme["lighth"],
+    )
+    style.configure(
+        "suggestions.TButton",
+        background=colorscheme["lighth"],
+        foreground=colorscheme["dark"],
+        lightcolor=colorscheme["lighth"],
+        darkcolor=colorscheme["lighth"],
+        bordercolor=colorscheme["lighth"],
+        focuscolor=colorscheme["lighth"],
+        focusthickness=1,
+        borderwidth=4,
+    )
+    style.map(
+        "suggestions.TButton",
+        background=[
+            ("pressed", colorscheme["hl"]),
+            ("active", colorscheme["light"]),
+            ("disabled", colorscheme["lightgrey"]),
+        ],
+        lightcolor=[
+            ("active", colorscheme["light"]),
+            ("pressed", colorscheme["hl"]),
+        ],
+        darkcolor=[
+            ("active", colorscheme["light"]),
+            ("pressed", colorscheme["hl"]),
+        ],
+        bordercolor=[
+            ("active", colorscheme["light"]),
+            ("pressed", colorscheme["hl"]),
+        ],
+        focuscolor=[("pressed", colorscheme["light"])],
     )
 
     return style

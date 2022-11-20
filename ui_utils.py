@@ -102,7 +102,7 @@ class VerticalNavMenu:
         self.root_frame = ttk.Frame(master)
         self.menu_button_flag = menu_button
         self.menu_frame = ttk.Frame(self.root_frame, style="NavMenu.TFrame")
-        self.menu_frame.pack(side="left", fill="both", expand=0, anchor="w")
+        self.menu_frame.pack(side="left", fill="both", expand=1, anchor="w")
         self.menu_data_widget = widget_packdata_fmt(self.menu_frame)
 
         self.content_frame = ttk.Frame(self.root_frame, style="verticalNavMenu.TFrame")
@@ -341,8 +341,7 @@ class medTable:
 
         # code for creating table
         for j in range(self.num_cols):
-
-            h = ttk.Label(self.rootframe, text=columns[j], style="THeading.TLabel")
+            h = ttk.Label(self.rootframe, text=columns[j], style="TableHeader.TLabel")
             h.grid(row=self.num_rows, column=j, sticky="we")
 
         self.data = []
@@ -376,6 +375,7 @@ class medTable:
         )
 
     def check_availability(self, med_name_lbl, qty_entry):
+        print(qty_entry.get(), type(qty_entry.get()))
         if check_med_availability(med_name_lbl["text"], int(qty_entry.get())):
             med_name_lbl["style"] = "success.TLabel"
         else:
@@ -394,7 +394,7 @@ class EntrySuggestions:
     def __init__(self, root, onClick=False):
         self.root = root
 
-        self.rootframe = ttk.Frame(root.master, style="dropdown.TFrame")
+        self.rootframe = ttk.Frame(root.master, style="suggestions.TFrame")
         self.rootframe.bind("<FocusOut>", lambda event: self.hide())
         self.rootframe.lift(root)
         self.rootframe.place(
@@ -432,7 +432,7 @@ class EntrySuggestions:
                     self.rootframe,
                     text=val,
                     command=lambda indx=i: self.on_sel(indx),
-                    style="borderless.TButton",
+                    style="suggestions.TButton",
                 )
                 e.pack(fill="x", expand=1)
                 self.items.append(e)
