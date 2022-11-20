@@ -203,7 +203,7 @@ def style(root):
     )
     style.configure(
         "error.TLabel",
-        foreground="#33e38a",
+        foreground="#fa333a",
         font=bold,
     )
 

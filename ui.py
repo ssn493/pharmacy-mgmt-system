@@ -179,6 +179,7 @@ class pos_page:
         self.med_insert_btn = ttk.Button(
             self.medicine_details_page,
             text="Insert",
+            command=lambda:self.med_table.ins_row(self.med_name_entry.get())
         )
         self.med_insert_btn.grid(row=1, column=7, padx=10, pady=4, sticky="ne")
 

@@ -354,7 +354,7 @@ class medTable:
         l.grid(row=self.num_rows, column=0, sticky="we")
 
         e = ttk.Entry(self.rootframe, style="Table.TEntry")
-        e.grid(row=self.num_rows, column=1, sticky="we")
+        e.grid(row=self.num_rows, column=1, sticky="we", padx=4, pady=4)
         c = ttk.Button(
             self.rootframe,
             text="Check",
@@ -376,7 +376,7 @@ class medTable:
 
     def check_availability(self, med_name_lbl, qty_entry):
         print(qty_entry.get(), type(qty_entry.get()))
-        if check_med_availability(med_name_lbl["text"], int(qty_entry.get())):
+        if check_med_availability(str(med_name_lbl["text"]), int(qty_entry.get())):
             med_name_lbl["style"] = "success.TLabel"
         else:
             med_name_lbl["style"] = "error.TLabel"

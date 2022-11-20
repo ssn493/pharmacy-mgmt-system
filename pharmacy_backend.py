@@ -40,7 +40,7 @@ def commit():
 def get_field_names(table):
     field_names = []
     for field_data in table[fields]:
-        if len(field_data) > 1 and not field_data[0].startswith('FOREIGN KEY'):
+        if len(field_data) > 1 and not field_data[0].startswith("FOREIGN KEY"):
             field_names.append(field_data[0])
     return field_names
 
@@ -212,7 +212,7 @@ def get_med_quantity(med_name):
     med_qty = execute_sql(
         f"SELECT stock_qty FROM {meds[name]} WHERE name = '{med_name}'"
     )
-    med_qty = int(med_qty[0])
+    med_qty = int(med_qty[0]) if len(med_qty) > 0 else -1
     return med_qty
 
 
