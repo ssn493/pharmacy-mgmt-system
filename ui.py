@@ -17,7 +17,7 @@ class emp_login_page:
 
         self.emp_name_entry = ttk.Entry(self.rootframe)
         self.emp_name_entry.grid(
-            row=2, column=0, padx=10, pady=4, columnspan=8, sticky="ew"
+            row=2, column=0, padx=10, pady=4, columnspan=8, sticky="we"
         )
 
         lx2 = ttk.Label(self.rootframe, text="Password", style="small.TLabel")
@@ -25,7 +25,7 @@ class emp_login_page:
 
         self.emp_pswd_entry = ttk.Entry(self.rootframe, show="*")
         self.emp_pswd_entry.grid(
-            row=4, column=0, padx=10, pady=4, columnspan=6, sticky="ew"
+            row=4, column=0, padx=10, pady=4, columnspan=6, sticky="we"
         )
         self.emp_shown_pswd = False
         self.emp_show_pswd_btn = ttk.Button(
@@ -46,20 +46,6 @@ class emp_login_page:
             flag = False
 
     def as_frame(self):
-        return self.rootframe
-
-
-class recent_orders_page:
-    def __init__(self, master):
-        self.rootframe = ttk.Frame(master)
-        self.rootframe.pack(fill="both", expand=1)
-        grid_config(self.rootframe)
-        self.rootframe.grid_rowconfigure(0, weight=1)
-
-        self.past_orders = ttk.Frame(self.rootframe)
-        self.past_orders.grid(row=0, column=1, columnspan=6)
-
-    def as_tab(self):
         return self.rootframe
 
 
@@ -88,7 +74,7 @@ class pos_page:
 
         self.cust_phone_number_entry = ttk.Entry(self.customer_details_page)
         self.cust_phone_number_entry.grid(
-            row=2, column=0, padx=10, pady=4, columnspan=6, sticky="nswe"
+            row=2, column=0, padx=10, pady=4, columnspan=6, sticky="we"
         )
         self.cust_search_btn = ttk.Button(
             self.customer_details_page, text="Search", command=self.search_by_ph_no
@@ -135,6 +121,7 @@ class pos_page:
             text="Register New Customer",
             style="accent.TButton",
             state="disabled",
+            command=self.reg_new_cust,
         )
         self.new_cust_reg_btn.grid(
             row=9, column=0, columnspan=8, padx=10, pady=6, sticky="swe"
@@ -179,7 +166,7 @@ class pos_page:
         self.med_insert_btn = ttk.Button(
             self.medicine_details_page,
             text="Insert",
-            command=lambda:self.med_table.ins_row(self.med_name_entry.get())
+            command=lambda: self.med_table.ins_row(self.med_name_entry.get()),
         )
         self.med_insert_btn.grid(row=1, column=7, padx=10, pady=4, sticky="ne")
 
@@ -211,7 +198,7 @@ class pos_page:
 
         self.datetime_entry = ttk.Entry(self.payment_details_page)
         self.datetime_entry.grid(
-            row=1, column=0, padx=10, pady=4, columnspan=5, sticky="ew"
+            row=1, column=0, padx=10, pady=4, columnspan=5, sticky="we"
         )
 
         self.ct_btn = ttk.Button(
@@ -226,7 +213,7 @@ class pos_page:
         self.gen_recpt = ttk.Button(
             self.payment_details_page, text="Generate Receipt", style="accent.TButton"
         )
-        self.gen_recpt.grid(row=3, column=0, padx=10, pady=8, columnspan=8, sticky="ew")
+        self.gen_recpt.grid(row=3, column=0, padx=10, pady=8, columnspan=8, sticky="we")
 
         var = tk.StringVar()
         self.payment_method_menu = ttk.OptionMenu(
@@ -234,7 +221,7 @@ class pos_page:
         )
         # self.payment_method_menu.config()
         self.payment_method_menu.grid(
-            row=2, column=0, padx=10, pady=8, columnspan=8, sticky="ew"
+            row=2, column=0, padx=10, pady=8, columnspan=8, sticky="we"
         )
 
         self.menu.add(self.customer_details_page, text="Customer Details")
@@ -303,13 +290,13 @@ class pos_page:
         self.cust_addr_entry.insert(tk.END, data[4])
 
     def reg_new_cust(self):
-        data = {}
-        data["name"] = self.cust_name_entry.get()
-        data["age"] = self.cust_age_entry.get()
-        data["sex"] = self.cust_sex_entry.get()
-        data["address"] = self.cust_addr_entry.get()
+        name = self.cust_name_entry.get()
+        age = int(self.cust_age_entry.get())
+        sex = self.cust_sex_entry.get()
+        address = self.cust_addr_entry.get()
+        ph_no = int(self.cust_phone_number_entry.get())
 
-        insert_from_dict(customers, data)
+        register_new_customer(name, age, sex, address, ph_no)
 
     def med_suggestions(self, event):
         self.med_dropdown.data.clear()
@@ -325,6 +312,8 @@ class pos_page:
             self.new_cust_reg_btn["state"] = "normal"
         else:
             self.display_cust_data(data)
+            hide_grid_widget(self.new_cust_warn_label)
+            self.new_cust_reg_btn["state"] = "disabled"
 
     def as_tab(self):
         return self.rootframe
@@ -446,7 +435,7 @@ class inventory_order_page:
             command=self.select_from_filters,
         )
         self.apply_btn.grid(
-            row=6, column=0, padx=10, pady=10, columnspan=8, sticky="ew"
+            row=6, column=0, padx=10, pady=10, columnspan=8, sticky="we"
         )
 
         self.note.add(self.view, text="Table View")
@@ -623,7 +612,7 @@ class item_page:
             self.filters, text="Apply Filters", style="accent.TButton"
         )
         self.apply_btn.grid(
-            row=6, column=0, padx=10, pady=10, columnspan=8, sticky="ew"
+            row=6, column=0, padx=10, pady=10, columnspan=8, sticky="we"
         )
 
         self.item_table.bind("<<TreeviewSelect>>", self.selected_item)
@@ -667,13 +656,15 @@ class item_page:
         self.close_win(top)
         o.show_table()
 
-    def add_item_data(self, e1, e2, e3, e4, e5, top):
-        item_num = int(e1.get())
-        item_name = e2.get()
-        qty = int(e3.get())
-        amt = int(e4.get())
-        item_desc = e5.get()
-        addItemtoDB(item_num, item_name, qty, amt, item_desc)
+    def add_item_data(self, e1, e2, e3, e4, e5, e6, top):
+        med_id = int(e1.get())
+        name = e2.get()
+        manufacturer = e3.get()
+        stock_qty = int(e4.get())
+        mrp = float(e5.get())
+        gst_percent = float(e6.get())
+        print(med_id)
+        add_new_medicine(med_id, name, manufacturer, stock_qty, mrp, gst_percent)
         self.close_win(top)
         i.show_table()
 
@@ -684,43 +675,49 @@ class item_page:
         rootframe.pack(fill="both", expand=1)
         grid_config(rootframe)
 
-        l1 = ttk.Label(rootframe, text="Item Id", style="small.TLabel")
-        l1.grid(row=0, column=0, padx=10, pady=2, sticky="sw")
+        l1 = ttk.Label(rootframe, text="Medicine Id", style="small.TLabel")
+        l1.grid(row=0, column=0, padx=14, pady=2, sticky="sw")
 
         e1 = ttk.Entry(rootframe)
-        e1.grid(row=1, column=0, padx=10, pady=2, sticky="sew", columnspan=8)
+        e1.grid(row=1, column=0, padx=14, pady=2, sticky="sew", columnspan=8)
 
-        l2 = ttk.Label(rootframe, text=f"Item Name", style="small.TLabel")
-        l2.grid(row=2, column=0, padx=10, pady=2, sticky="sw")
+        l2 = ttk.Label(rootframe, text=f"Medicine Name", style="small.TLabel")
+        l2.grid(row=2, column=0, padx=14, pady=2, sticky="sw")
 
         e2 = ttk.Entry(rootframe)
-        e2.grid(row=3, column=0, padx=10, pady=2, sticky="sew", columnspan=8)
+        e2.grid(row=3, column=0, padx=14, pady=2, sticky="sew", columnspan=8)
 
-        l3 = ttk.Label(rootframe, text="Quantity", style="small.TLabel")
-        l3.grid(row=4, column=0, padx=10, pady=2, sticky="sw")
+        l3 = ttk.Label(rootframe, text="Manufacturer", style="small.TLabel")
+        l3.grid(row=4, column=0, padx=14, pady=2, sticky="sw")
 
         e3 = ttk.Entry(rootframe)
-        e3.grid(row=5, column=0, padx=10, pady=2, sticky="sew", columnspan=8)
+        e3.grid(row=5, column=0, padx=14, pady=2, sticky="sew", columnspan=8)
 
-        l4 = ttk.Label(rootframe, text="Amount", style="small.TLabel")
-        l4.grid(row=6, column=0, padx=10, pady=2, sticky="sw")
+        l4 = ttk.Label(rootframe, text="Stock Quantity", style="small.TLabel")
+        l4.grid(row=6, column=0, padx=14, pady=2, sticky="sw")
 
         e4 = ttk.Entry(rootframe)
-        e4.grid(row=7, column=0, padx=10, pady=2, sticky="sew", columnspan=8)
+        e4.grid(row=7, column=0, padx=14, pady=2, sticky="sew", columnspan=8)
 
-        l5 = ttk.Label(rootframe, text="Item Description", style="small.TLabel")
-        l5.grid(row=8, column=0, padx=10, pady=2, sticky="sw")
+        l5 = ttk.Label(rootframe, text="MSRP", style="small.TLabel")
+        l5.grid(row=8, column=0, padx=14, pady=2, sticky="sw")
 
         e5 = ttk.Entry(rootframe)
-        e5.grid(row=9, column=0, padx=10, pady=2, sticky="sew", columnspan=8)
+        e5.grid(row=9, column=0, padx=14, pady=2, sticky="sew", columnspan=8)
+
+        l6 = ttk.Label(rootframe, text=r"GST %age", style="small.TLabel")
+        l6.grid(row=10, column=0, padx=14, pady=2, sticky="sw")
+
+        e6 = ttk.Entry(rootframe)
+        e6.grid(row=11, column=0, padx=14, pady=2, sticky="sew", columnspan=8)
 
         confirm_row_btn = ttk.Button(
             rootframe,
             text="Confirm",
             style="accent.TButton",
-            command=lambda: self.add_item_data(e1, e2, e3, e4, e5, top),
+            command=lambda: self.add_item_data(e1, e2, e3, e4, e5, e6, top),
         )
-        confirm_row_btn.grid(row=10, column=0, padx=10, pady=6, sticky="sew")
+        confirm_row_btn.grid(row=12, column=0, padx=10, pady=6, sticky="sew")
 
         cancel_button = ttk.Button(
             rootframe,
@@ -728,7 +725,7 @@ class item_page:
             style="accent.TButton",
             command=lambda: self.close_win(top),
         )
-        cancel_button.grid(row=10, column=5, padx=10, pady=6, sticky="sew")
+        cancel_button.grid(row=12, column=7, padx=14, pady=6, sticky="sew")
 
     def delete_item_data(self, med_id, top):
         delete_medicine(med_id)

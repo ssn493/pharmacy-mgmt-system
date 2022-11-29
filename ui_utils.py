@@ -72,7 +72,7 @@ def easy_treeview(master, columns):
     tv = ttk.Treeview(master=master, columns=columns, show="headings")
 
     for column in columns:
-        tv.column(column, width=100, anchor="c", stretch=tk.YES)
+        tv.column(column, width=80, anchor="c", stretch=tk.YES)
         tv.heading(column, text=str(column))
 
     return tv
@@ -102,6 +102,7 @@ class VerticalNavMenu:
         self.root_frame = ttk.Frame(master)
         self.menu_button_flag = menu_button
         self.menu_frame = ttk.Frame(self.root_frame, style="NavMenu.TFrame")
+        self.menu_frame.lift()
         self.menu_frame.pack(side="left", fill="both", expand=1, anchor="w")
         self.menu_data_widget = widget_packdata_fmt(self.menu_frame)
 
@@ -383,6 +384,7 @@ class medTable:
 
     def get_data(self):
         for index, row in enumerate(self.row_widgets):
+            self.data[index].clear()
             self.data[index].append(row[2].get())
         return self.data
 

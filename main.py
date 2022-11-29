@@ -7,15 +7,15 @@ import os
 fbasepath = os.getcwd() + os.path.sep + "assets" + os.path.sep
 
 if os.name == "nt":
-    loadfont_win(fbasepath + "Inter-Light.ttf")
+    loadfont_win(fbasepath + "Inter-Medium.ttf")
     loadfont_win(fbasepath + "Inter-Regular.ttf")
 elif os.name == 'posix':
-    loadfont_lin(fbasepath+'Inter-Light.ttf')
+    loadfont_lin(fbasepath+'Inter-Medium.ttf')
     loadfont_lin(fbasepath+'Inter-Regular.ttf')
     
 #main code
-ui.main()
+ui.devel_run_pages()
 
 if os.name == 'posix':
-    removefont_lin(fbasepath+'Inter-Light.ttf')
+    removefont_lin(fbasepath+'Inter-Medium.ttf')
     removefont_lin(fbasepath+'Inter-Regular.ttf')

@@ -91,7 +91,7 @@ def insert_from_dict(table, data_dict):
 meds = {
     name: "meds",
     fields: [
-        ("id", INT, PRIMARY_KEY, "AUTOINCREMENT"),
+        ("id", INT, PRIMARY_KEY),
         ("name", VARCHAR),
         ("manufacturer", VARCHAR),
         ("stock_qty", INT),
@@ -188,8 +188,17 @@ def get_table(table):
 
 
 def register_new_customer(name, age, sex, addr, ph_no):
+    """Registers the data of a new customer
+
+    Args:
+        name (str): name of the new customer
+        age (int): age of the customer
+        sex (str): sex of the customer
+        addr (str): address of the customer
+        ph_no (int): phone number of the customer
+    """
     execute_sql(
-        f"INSERT INTO {customers[name]} VALUES ('{name}',{age},'{sex}','{stock_qty}',{ph_no}) "
+        f"INSERT INTO {customers[name]}(name, age, sex, address, phone_no) VALUES ('{name}',{age},'{sex}','{stock_qty}',{ph_no}) "
     )
 
 
@@ -199,7 +208,7 @@ def delete_customer(cust_id):
 
 def add_new_medicine(med_id, name, manufacturer, stock_qty, mrp, gst_percent):
     execute_sql(
-        f"INSERT INTO {meds[name]} VALUES ({med_id},'{name}','{manufacturer}',{stock_qty},{mrp},{gst_percent}) "
+        f"INSERT INTO {meds[name]}(id, name, manufacturer, stock_qty, mrp, gst_percent) VALUES ({med_id},'{name}','{manufacturer}',{stock_qty},{mrp},{gst_percent}) "
     )
 
 
@@ -217,6 +226,15 @@ def get_med_quantity(med_name):
 
 
 def check_med_availability(med_name, qty):
+    """checks if a medicine is available in the given quantity
+
+    Args:
+        med_name (str): name of the required medicine
+        qty (int): required quantity of medicine
+
+    Returns:
+        bool: True if medicine is available else False
+    """
     return get_med_quantity(med_name) >= qty
 
 
@@ -233,9 +251,18 @@ def search_cust_by_name(cust_name):
 
 
 def search_cust_by_phone_no(phone_no):
+    """_summary_
+
+    Args:
+        phone_no (int):
+
+    Returns:
+        list: list of customers with phone number phone_no
+    """
     cust_list = execute_sql(
         f"SELECT * FROM {customers[name]} WHERE phone_no={phone_no}"
     )
+    print(cust_list)
     return cust_list
 
 

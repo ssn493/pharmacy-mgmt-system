@@ -23,11 +23,11 @@ def style(root):
 
     # style definitions
     # Button:
-    font = ("Inter Light", 11)
-    bold = ("Inter", 11)
-    header = ("Inter", 12)
+    font = ("Inter", 11)
+    bold = ("Inter Medium", 11)
+    header = ("Inter Medium", 12)
     bigfont = ("Inter", 13)
-    smallfont = ("Inter Light", 9)
+    smallfont = ("Inter", 9)
 
     style.configure(".", bg=colorscheme["light"], font=font)
 
@@ -191,7 +191,7 @@ def style(root):
     )
     style.configure(
         "TableHeader.TLabel",
-        padding=(0,10),
+        padding=(0, 10),
         bordercolor=colorscheme["lighth"],
         borderwidth=0,
         font=bold,
@@ -203,7 +203,7 @@ def style(root):
     )
     style.configure(
         "error.TLabel",
-        foreground="#fa333a",
+        foreground="#fa3a3e",
         font=bold,
     )
 
@@ -253,6 +253,7 @@ def style(root):
         bd=0,
         padding=(6, 6),
         relief=tk.FLAT,
+        font=font,
     )
     style.map(
         "TEntry",
