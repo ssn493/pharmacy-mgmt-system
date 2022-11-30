@@ -71,7 +71,6 @@ def insert_from_dict(table, data_dict):
     attributes = str(tuple(data_dict.keys()))
     values = str(tuple(data_dict.values()))
     ins_cmd = "INSERT INTO {0}{1} VALUES {2}".format(table[name], attributes, values)
-    print(ins_cmd)
     cursor.execute(ins_cmd)
 
 
@@ -328,7 +327,6 @@ def place_inv_order(med_id, med_name, qty):
     insert_cmd = f"""INSERT INTO {inv_orders[name]} (order_name,order_date,item_id,quantity,order_amount,status) 
                     VALUES('{med_name}', '{datetime.date.today()}', 
                     {med_id},{qty},{amt} ,'Pending' );"""
-    # print(insert_cmd)
     cursor.execute(insert_cmd)
     conn.commit()
 

@@ -6,11 +6,13 @@ from theme import style
 from ui_utils import *
 
 
-class emp_login_page:
-    def __init__(self, root, login_cmd):
+class retail_login_page:
+    def __init__(self, root, login_command):
+
         self.rootframe = ttk.Frame(root)
         self.rootframe.pack(fill="both", expand=1)
         grid_config(self.rootframe)
+
         # Employee Login
         lx1 = ttk.Label(self.rootframe, text="Employee Name", style="small.TLabel")
         lx1.grid(row=1, column=0, padx=10, pady=4, sticky="sw")
@@ -29,7 +31,7 @@ class emp_login_page:
         )
         self.emp_shown_pswd = False
         self.emp_show_pswd_btn = ttk.Button(
-            self.login_user_page,
+            self.rootframe,
             text="Show Password",
             command=lambda: self.show_pswd(self.emp_pswd_entry, self.emp_shown_pswd),
         )
@@ -37,8 +39,32 @@ class emp_login_page:
             row=4, column=6, columnspan=2, padx=10, pady=4, sticky="swe"
         )
 
-        self.login_button = ttk.Button(text='Login', style='accent.TButton', command=login_cmd)
-        self.login_button.grid(row=5, column=0, columnspan=8, padx=10,pady=4, sticky='swe')
+        self.login_button = ttk.Button(
+            self.rootframe,
+            text="Login",
+            style="accent.TButton",
+            command=lambda: self.login_cmd(login_command),
+        )
+        self.login_button.grid(
+            row=5, column=0, columnspan=8, padx=10, pady=4, sticky="swe"
+        )
+
+        self.invalid_warn_label = ttk.Label(
+            self.rootframe,
+            text="Invalid username or password!",
+            style="accent.TLabel",
+        )
+        self.invalid_warn_label.grid(
+            row=6,
+            column=0,
+            columnspan=8,
+            ipadx=6,
+            ipady=6,
+            padx=10,
+            pady=6,
+            sticky="swe",
+        )
+        hide_grid_widget(self.invalid_warn_label)
 
     def show_pswd(self, widget, flag):
         if not flag:
@@ -48,12 +74,103 @@ class emp_login_page:
             widget["show"] = "*"
             flag = False
 
+    def login_cmd(self, cmd):
+        user_id = self.emp_name_entry.get()
+        password = self.emp_pswd_entry.get()
+
+        if login_emp(user_id, password):
+            hide_grid_widget(self.invalid_warn_label)
+            cmd()
+        else:
+            show_grid_widget(self.invalid_warn_label)
+
+    def as_frame(self):
+        return self.rootframe
+
+
+class inventory_login_page:
+    def __init__(self, root, login_command):
+
+        self.rootframe = ttk.Frame(root)
+        self.rootframe.pack(fill="both", expand=1)
+        grid_config(self.rootframe)
+
+        # Employee Login
+        lx1 = ttk.Label(self.rootframe, text="Employee Name", style="small.TLabel")
+        lx1.grid(row=1, column=0, padx=10, pady=4, sticky="sw")
+
+        self.emp_name_entry = ttk.Entry(self.rootframe)
+        self.emp_name_entry.grid(
+            row=2, column=0, padx=10, pady=4, columnspan=8, sticky="we"
+        )
+
+        lx2 = ttk.Label(self.rootframe, text="Password", style="small.TLabel")
+        lx2.grid(row=3, column=0, padx=10, pady=4, sticky="sw")
+
+        self.emp_pswd_entry = ttk.Entry(self.rootframe, show="*")
+        self.emp_pswd_entry.grid(
+            row=4, column=0, padx=10, pady=4, columnspan=6, sticky="we"
+        )
+        self.emp_shown_pswd = False
+        self.emp_show_pswd_btn = ttk.Button(
+            self.rootframe,
+            text="Show Password",
+            command=lambda: self.show_pswd(self.emp_pswd_entry, self.emp_shown_pswd),
+        )
+        self.emp_show_pswd_btn.grid(
+            row=4, column=6, columnspan=2, padx=10, pady=4, sticky="swe"
+        )
+
+        self.login_button = ttk.Button(
+            self.rootframe,
+            text="Login",
+            style="accent.TButton",
+            command=lambda: self.login_cmd(login_command),
+        )
+        self.login_button.grid(
+            row=5, column=0, columnspan=8, padx=10, pady=4, sticky="swe"
+        )
+
+        self.invalid_warn_label = ttk.Label(
+            self.rootframe,
+            text="Invalid username or password!",
+            style="accent.TLabel",
+        )
+        self.invalid_warn_label.grid(
+            row=6,
+            column=0,
+            columnspan=8,
+            ipadx=6,
+            ipady=6,
+            padx=10,
+            pady=6,
+            sticky="swe",
+        )
+        hide_grid_widget(self.invalid_warn_label)
+
+    def show_pswd(self, widget, flag):
+        if not flag:
+            widget["show"] = ""
+            flag = True
+        else:
+            widget["show"] = "*"
+            flag = False
+
+    def login_cmd(self, cmd):
+        user_id = self.emp_name_entry.get()
+        password = self.emp_pswd_entry.get()
+
+        if login_emp(user_id, password):
+            hide_grid_widget(self.invalid_warn_label)
+            cmd()
+        else:
+            show_grid_widget(self.invalid_warn_label)
+
     def as_frame(self):
         return self.rootframe
 
 
 class pos_page:
-    
     def __init__(self, master, root_window):
         self.rootframe = ttk.Frame(master)
         self.rootframe.pack(fill="both", expand=1)
@@ -84,7 +201,7 @@ class pos_page:
             self.customer_details_page, text="Search", command=self.search_by_ph_no
         )
         self.cust_search_btn.grid(
-            row=2, column=6, columnspan=2, padx=10, pady=4, sticky="swe"
+            row=2, column=6, columnspan=2, padx=10, pady=4, sticky="nswe"
         )
         l1 = ttk.Label(
             self.customer_details_page, text="Customer Name", style="small.TLabel"
@@ -178,7 +295,7 @@ class pos_page:
         self.med_table.ins_row("Med 1")
         self.med_table.grid(row=2, column=0, padx=10, pady=4, columnspan=8, sticky="we")
 
-        p = lambda: print(self.med_table.get_data())
+        p = lambda: self.med_table.get_data()
         self.cnf_med_quantity = ttk.Button(
             self.medicine_details_page,
             text="Confirm Medicine Details",
@@ -666,7 +783,6 @@ class item_page:
         stock_qty = int(e4.get())
         mrp = float(e5.get())
         gst_percent = float(e6.get())
-        print(med_id)
         add_new_medicine(med_id, name, manufacturer, stock_qty, mrp, gst_percent)
         self.close_win(top)
         i.show_table()
@@ -819,24 +935,47 @@ class item_page:
 
 def main():
     root = tk.Tk()
-    # root = ttk.Frame(main)
-    # root.pack(fill="both", expand=1)
 
     s = style(root)
-    
+
     page_buf = PageBuffer(root)
 
-    # a = login_page(root)
+    login_menu = HorizontalNavMenu(page_buf.content_frame)
+    ret_login = retail_login_page(
+        login_menu.content_frame, lambda: page_buf.show_page_by_name("retail")
+    )
+    inv_login = inventory_login_page(
+        login_menu.content_frame, lambda: page_buf.show_page_by_name("inv")
+    )
+    login_menu.add(ret_login.as_frame(), text="Retail Login")
+    login_menu.add(inv_login.as_frame(), text="Inventory Login")
 
-    note = VerticalNavMenu(root, menu_button=True)
+    ret_menu = VerticalNavMenu(page_buf.content_frame)
+    inv_menu = VerticalNavMenu(page_buf.content_frame)
 
-    pos = pos_page(note.content_frame, root_window=root)
-    abt = about_page(master=note.content_frame, root_window=root)
+    pos = pos_page(master=ret_menu.content_frame, root_window=root)
 
-    note.add(pos.as_tab(), text="New Order")
-    note.add(abt.as_tab(), text="About")
-    note.add(ttk.Frame(), text="Quit", custom_cmd=abt.quit_app)
-    note.pack(fill="both", expand=1)
+    items = item_page(master=inv_menu.content_frame, root_window=root)
+    invt = inventory_order_page(master=inv_menu.content_frame, root_window=root)
+
+    ret_abt = about_page(master=ret_menu.content_frame, root_window=root)
+    inv_abt = about_page(master=inv_menu.content_frame, root_window=root)
+
+    ret_menu.add(pos.as_tab(), text="New Order")
+    ret_menu.add(ret_abt.as_tab(), text="About")
+    ret_menu.add(ttk.Frame(), text="Quit", custom_cmd=ret_abt.quit_app)
+
+    inv_menu.add(items.as_tab(), text="Items")
+    inv_menu.add(invt.as_tab(), text="Inventory Orders")
+    inv_menu.add(inv_abt.as_tab(), text="About")
+    inv_menu.add(ttk.Frame(), text="Quit", custom_cmd=inv_abt.quit_app)
+
+    page_buf.add(login_menu.root_frame, name="login")
+    page_buf.add(ret_menu.root_frame, name="retail")
+    page_buf.add(inv_menu.root_frame, name="inv")
+
+    login_menu.pack()
+    page_buf.pack(fill="both", expand=1)
 
     root.mainloop()
     return root
@@ -856,9 +995,11 @@ def devel_run_pages(*pages, menu_orient="vertical"):
         note = None
 
     pos = pos_page(master=note.content_frame, root_window=root)
-    abt = about_page(master=note.content_frame, root_window=root)
+
     items = item_page(master=note.content_frame, root_window=root)
     invt = inventory_order_page(master=note.content_frame, root_window=root)
+
+    abt = about_page(master=note.content_frame, root_window=root)
 
     note.add(pos.as_tab(), text="New Order")
     note.add(items.as_tab(), text="Inventory")
@@ -872,4 +1013,4 @@ def devel_run_pages(*pages, menu_orient="vertical"):
 
 
 if __name__ == "__main__":
-    devel_run_pages()
+    main()

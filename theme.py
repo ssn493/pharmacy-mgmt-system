@@ -27,7 +27,7 @@ def style(root):
     bold = ("Inter Medium", 11)
     header = ("Inter", 12)
     bigfont = ("Inter", 13)
-    smallfont = ("Inter", 9)
+    smallfont = ("Inter Light", 9)
 
     style.configure(".", bg=colorscheme["light"], font=font)
 
@@ -251,8 +251,8 @@ def style(root):
         insertwidth=2,
         borderwidth=4,
         bd=0,
-        padding=(6, 6),
-        relief=tk.FLAT,
+        padding=(8, 8),
+        relief=tk.SOLID,
         font=font,
     )
     style.map(

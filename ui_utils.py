@@ -97,7 +97,7 @@ class PageBuffer:
     def show_page(self, page_index):
         if page_index != self.current_page_index:
             current_frame_data_widget = self.page_buffer[self.current_page_index][1]
-            frame_data_widget = self.page_buffer[frame_index][1]
+            frame_data_widget = self.page_buffer[page_index][1]
 
             hide_packed_widget(current_frame_data_widget)
             show_packed_widget(frame_data_widget)
@@ -110,8 +110,8 @@ class PageBuffer:
                 index = self.page_buffer.index(i)
         self.show_page(index)
 
-    def add(self, frame, text=None):
-        if not isinstance(text, str):
+    def add(self, frame, name=None):
+        if not isinstance(name, str):
             raise Exception("Entered text is not valid")
 
         frame.pack(**self.pack_info)
@@ -121,7 +121,8 @@ class PageBuffer:
             "hidden": False,
         }
         hide_packed_widget(frame_data_widget)
-        self.page_buffer.append((text, frame_data_widget))
+        self.page_buffer.append([name, frame_data_widget])
+        self.current_page_index = len(self.page_buffer)-1
 
     def prev_page(self):
         if self.current_page_index != 0:
@@ -132,7 +133,7 @@ class PageBuffer:
             self.show_page(self.current_page_index + 1)
 
     def pack(self, **pack_info):
-        self.content_frame.pack(**pack_info)
+        self.content_frame.pack(**self.pack_info)
         if self.page_buffer != []:
             self.show_page(0)
 
@@ -172,19 +173,7 @@ class VerticalNavMenu:
             ),
             name="menu_btn_image",
         )
-        print(
-            os.path.isfile(
-                "".join(
-                    [
-                        os.getcwd(),
-                        os.path.sep,
-                        "assets",
-                        os.path.sep,
-                        "menu_dark_btn.png",
-                    ]
-                )
-            )
-        )
+
         self.menu_show_btn = ttk.Button(
             self.root_frame,
             image=self.menu_img,
@@ -338,7 +327,7 @@ class HorizontalNavMenu:
 class medTable:
     def __init__(self, root):
         self.rootframe = ttk.Frame(root)
-        columns=["Name", "Qty", "Availability"]
+        columns = ["Name", "Qty", "Availability"]
         grid_config(self.rootframe, cols=len(columns))
         self.rootframe.grid_columnconfigure(0, weight=3)
         self.num_rows = 0
@@ -371,7 +360,9 @@ class medTable:
         self.row_widgets.append(col_widgets)
 
     def check_availability(self, med_name_lbl, qty_entry):
-        if pharmacy_backend.check_med_availability(str(med_name_lbl["text"]), int(qty_entry.get())):
+        if pharmacy_backend.check_med_availability(
+            str(med_name_lbl["text"]), int(qty_entry.get())
+        ):
             med_name_lbl["style"] = "success.TLabel"
             return True
         else:
@@ -386,7 +377,7 @@ class medTable:
         self.data.clear()
         for row in self.row_widgets:
             if self.check_availability(row[1], row[2]):
-                self.data[row[1]['text']] = int(row[2].get())
+                self.data[row[1]["text"]] = int(row[2].get())
         return self.data
 
     def grid(self, **kwargs):
