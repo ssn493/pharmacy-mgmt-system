@@ -53,8 +53,6 @@ def create_table(table):
             schema_text = schema_text + column_def + ", "
         elif len(column_def) > 1:
             schema_text = schema_text + " ".join(column_def) + ", "
-        else:
-            pass
 
     create_cmd = f"CREATE TABLE IF NOT EXISTS {table[name]}({schema_text[:-2]})"
     cursor.execute(create_cmd)
@@ -174,17 +172,16 @@ receipt = """
     """
 
 
-def search_by_field(table, search_attr, value):
-    data_list = list(
-        execute_sql(f"SELECT * FROM {table[name]} WHERE {search_attr} LIKE '{value}%'")
-    )
-    return data_list
+# def search_by_field(table, search_attr, value):
+#     data_list = list(
+#         execute_sql(f"SELECT * FROM {table[name]} WHERE {search_attr} LIKE '{value}%'")
+#     )
+#     return data_list
 
 
 def get_table(table):
     table_name = table[name] if isinstance(table, dict) else table
-    data_list = list(execute_sql(f"SELECT * FROM {table_name}"))
-    return data_list
+    return list(execute_sql(f"SELECT * FROM {table_name}"))
 
 
 def register_new_customer(name, age, sex, addr, ph_no):
@@ -197,7 +194,8 @@ def register_new_customer(name, age, sex, addr, ph_no):
         addr (str): address of the customer
         ph_no (int): phone number of the customer
     """
-    execute_sql(
+    global cursor
+    cursor.execute(
         f"INSERT INTO {customers[name]}(name, age, sex, address, phone_no) VALUES ('{name}',{age},'{sex}','{stock_qty}',{ph_no}) "
     )
 
@@ -239,15 +237,14 @@ def check_med_availability(med_name, qty):
 
 
 def search_med_by_name(medicine_name):
-    med_list = execute_sql(f"SELECT * FROM meds WHERE name LIKE '{medicine_name}%'")
-    return med_list
+    return execute_sql(f"SELECT * FROM meds WHERE name LIKE '{medicine_name}%'")
 
 
-def search_cust_by_name(cust_name):
-    cust_list = execute_sql(
-        f"SELECT * FROM {customers[name]} WHERE name LIKE '{cust_name}%'"
-    )
-    return cust_list
+# def search_cust_by_name(cust_name):
+#     cust_list = execute_sql(
+#         f"SELECT * FROM {customers[name]} WHERE name LIKE '{cust_name}%'"
+#     )
+#     return cust_list
 
 
 def search_cust_by_phone_no(phone_no):
@@ -259,11 +256,9 @@ def search_cust_by_phone_no(phone_no):
     Returns:
         list: list of customers with phone number phone_no
     """
-    cust_list = execute_sql(
+    return execute_sql(
         f"SELECT * FROM {customers[name]} WHERE phone_no={phone_no}"
     )
-    print(cust_list)
-    return cust_list
 
 
 # def filter_custs(name_cond, age_cond, sex_cond):
@@ -306,10 +301,9 @@ def cust_create_new_order(cust_id, medicine_data, txn_date):
 
 
 def cust_show_past_orders(cust_id):
-    order_list = execute_sql(
+    return execute_sql(
         f"SELECT DISTINCT order_id FROM {orders[name]} WHERE cust_id={cust_id}"
     )
-    return order_list
 
 
 def cust_show_order_details(order_id):
@@ -323,11 +317,7 @@ def login_emp(emp_id, password):
     stored_password = execute_sql(
         f"SELECT password FROM {emp[name]} WHERE emp_id={emp_id}"
     )
-    if password == str(stored_password):
-        return True
-    else:
-        return False
-
+    return password == str(stored_password[0])
 
 def place_inv_order(med_id, med_name, qty):
     global cursor
@@ -368,6 +358,7 @@ def change_inv_order_status(order_id, med_id):
     cursor.execute(update_cmd)
     cursor.execute(update2_cmd)
     conn.commit()
+
 
 
 def create_backend():

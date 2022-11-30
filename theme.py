@@ -23,9 +23,9 @@ def style(root):
 
     # style definitions
     # Button:
-    font = ("Inter", 11)
+    font = ("Inter Light", 11)
     bold = ("Inter Medium", 11)
-    header = ("Inter Medium", 12)
+    header = ("Inter", 12)
     bigfont = ("Inter", 13)
     smallfont = ("Inter", 9)
 

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from pharmacy_backend import check_med_availability
+import pharmacy_backend
 import os
 
 
@@ -12,11 +12,7 @@ def grid_config(root, rows=8, cols=8):
 
 
 def widget_packdata_fmt(widget):
-    hidden_widget = {}
-    hidden_widget["widget"] = widget
-    hidden_widget["packinfo"] = widget.pack_info()
-    hidden_widget["hidden"] = False
-    return hidden_widget
+    return {"widget": widget, "packinfo": widget.pack_info(), "hidden": False}
 
 
 def hide_packed_widget(hidden_widget):
@@ -50,9 +46,7 @@ def next_tab(notebk):
     all_tabs = notebk.tabs()
     sel_tab = notebk.select()
 
-    if sel_tab == all_tabs[-1]:
-        pass
-    else:
+    if sel_tab != all_tabs[-1]:
         i = all_tabs.index(sel_tab)
         notebk.select(all_tabs[i + 1])
 
@@ -61,9 +55,7 @@ def prev_tab(notebk):
     all_tabs = notebk.tabs()
     sel_tab = notebk.select()
 
-    if sel_tab == all_tabs[0]:
-        pass
-    else:
+    if sel_tab != all_tabs[0]:
         i = all_tabs.index(sel_tab)
         notebk.select(all_tabs[i - 1])
 
@@ -85,16 +77,64 @@ def ins_row_treeview(tv, row_data):
 
 def ins_rows_treeview(tv, rows):
     num_rows = len(tv.get_children())
-    i = 0
-    for row in rows:
+    for i, row in enumerate(rows):
         tv.insert(parent="", index=num_rows + i, iid=num_rows + i, values=row)
-        i += 1
 
 
 def update_treeview(tv, updated_data):
     for item in tv.get_children():
         tv.delete(item)
     ins_rows_treeview(tv, updated_data)
+
+
+class PageBuffer:
+    def __init__(self, master):
+        self.content_frame = ttk.Frame(master)
+        self.current_page_index = -1
+        self.page_buffer = []
+        self.pack_info = {"fill": "both", "expand": 1}
+
+    def show_page(self, page_index):
+        if page_index != self.current_page_index:
+            current_frame_data_widget = self.page_buffer[self.current_page_index][1]
+            frame_data_widget = self.page_buffer[frame_index][1]
+
+            hide_packed_widget(current_frame_data_widget)
+            show_packed_widget(frame_data_widget)
+            self.current_page_index = page_index
+
+    def show_page_by_name(self, name):
+        index = self.current_page_index
+        for i in self.page_buffer:
+            if i[0] == name:
+                index = self.page_buffer.index(i)
+        self.show_page(index)
+
+    def add(self, frame, text=None):
+        if not isinstance(text, str):
+            raise Exception("Entered text is not valid")
+
+        frame.pack(**self.pack_info)
+        frame_data_widget = {
+            "widget": frame,
+            "packinfo": self.pack_info,
+            "hidden": False,
+        }
+        hide_packed_widget(frame_data_widget)
+        self.page_buffer.append((text, frame_data_widget))
+
+    def prev_page(self):
+        if self.current_page_index != 0:
+            self.show_page(self.current_page_index - 1)
+
+    def next_page(self):
+        if self.current_page_index != len(obj) - 1:
+            self.show_page(self.current_page_index + 1)
+
+    def pack(self, **pack_info):
+        self.content_frame.pack(**pack_info)
+        if self.page_buffer != []:
+            self.show_page(0)
 
 
 class VerticalNavMenu:
@@ -192,7 +232,7 @@ class VerticalNavMenu:
             text=text,
             style="NavMenu.TButton",
         )
-        if custom_cmd == None:
+        if custom_cmd is None:
             menu_btn.config(command=lambda: self.show_frame(frame_index))
         else:
             menu_btn.config(command=custom_cmd)
@@ -200,15 +240,11 @@ class VerticalNavMenu:
         self.menu_btn_widgets.append(menu_btn)
 
     def prev_page(self):
-        if self.current_frame_index == 0:
-            pass
-        else:
+        if self.current_frame_index > 0:
             self.show_frame(self.current_frame_index - 1)
 
     def next_page(self):
-        if self.current_frame_index == len(obj) - 1:
-            pass
-        else:
+        if self.current_frame_index < len(self.content_frame_buffer) - 1:
             self.show_frame(self.current_frame_index + 1)
 
     def pack(self, **pack_info):
@@ -273,7 +309,7 @@ class HorizontalNavMenu:
             text=text,
             style="NavMenu.TButton",
         )
-        if custom_cmd == None:
+        if custom_cmd is None:
             menu_btn.config(command=lambda: self.show_frame(frame_index))
         else:
             menu_btn.config(command=custom_cmd)
@@ -286,15 +322,11 @@ class HorizontalNavMenu:
         toggle_packed_widget(self.menu_data_widget)
 
     def prev_page(self):
-        if self.current_frame_index <= 0:
-            pass
-        else:
+        if self.current_frame_index > 0:
             self.show_frame(self.current_frame_index - 1)
 
     def next_page(self):
-        if self.current_frame_index >= len(self.content_frame_buffer) - 1:
-            pass
-        else:
+        if self.current_frame_index < len(self.content_frame_buffer) - 1:
             self.show_frame(self.current_frame_index + 1)
 
     def pack(self, **pack_info):
@@ -303,37 +335,10 @@ class HorizontalNavMenu:
             self.show_frame(0)
 
 
-class Table:
-    def __init__(self, root, columns):
-        self.rootframe = ttk.Frame(root)
-        grid_config(self.rootframe, cols=len(columns))
-        self.num_rows = 0
-        self.num_cols = len(columns)
-        self.row_widgets = []
-        # code for creating table
-        for j in range(self.num_cols):
-
-            h = ttk.Label(root, text=columns[j], style="THeading.TLabel")
-            h.grid(row=self.num_rows, column=j, sticky="we")
-
-    def ins_row(self, lst):
-        self.num_rows += 1
-        col_widgets = []
-        for j in range(self.num_cols):
-
-            e = ttk.Entry(self.rootframe)
-            e.grid(row=self.num_rows, column=j, sticky="we", style="Table.TEntry")
-            e.insert(END, lst[j])
-            col_widgets.append(e)
-        self.row_widgets.append(col_widgets)
-
-    def grid(**kwargs):
-        self.rootframe.grid(**kwargs)
-
-
 class medTable:
-    def __init__(self, root, columns=["Name", "Qty", "Availability"]):
+    def __init__(self, root):
         self.rootframe = ttk.Frame(root)
+        columns=["Name", "Qty", "Availability"]
         grid_config(self.rootframe, cols=len(columns))
         self.rootframe.grid_columnconfigure(0, weight=3)
         self.num_rows = 0
@@ -345,12 +350,10 @@ class medTable:
             h = ttk.Label(self.rootframe, text=columns[j], style="TableHeader.TLabel")
             h.grid(row=self.num_rows, column=j, sticky="we")
 
-        self.data = []
+        self.data = {}
 
     def ins_row(self, name):
         self.num_rows += 1
-        col_widgets = []
-
         l = ttk.Label(self.rootframe, text=name)
         l.grid(row=self.num_rows, column=0, sticky="we")
 
@@ -364,28 +367,26 @@ class medTable:
         )
         c.grid(row=self.num_rows, column=2, sticky="we")
 
-        col_widgets.append(self.num_rows)
-        col_widgets.append(l)
-        col_widgets.append(e)
-        col_widgets.append(c)
+        col_widgets = [self.num_rows, l, e, c]
         self.row_widgets.append(col_widgets)
-        self.data.append(
-            [
-                name,
-            ]
-        )
 
     def check_availability(self, med_name_lbl, qty_entry):
-        print(qty_entry.get(), type(qty_entry.get()))
-        if check_med_availability(str(med_name_lbl["text"]), int(qty_entry.get())):
+        if pharmacy_backend.check_med_availability(str(med_name_lbl["text"]), int(qty_entry.get())):
             med_name_lbl["style"] = "success.TLabel"
+            return True
         else:
             med_name_lbl["style"] = "error.TLabel"
+            return False
+
+    def batch_check_availability(self):
+        for row in self.row_widgets:
+            self.check_availability(row[1], row[2])
 
     def get_data(self):
-        for index, row in enumerate(self.row_widgets):
-            self.data[index].clear()
-            self.data[index].append(row[2].get())
+        self.data.clear()
+        for row in self.row_widgets:
+            if self.check_availability(row[1], row[2]):
+                self.data[row[1]['text']] = int(row[2].get())
         return self.data
 
     def grid(self, **kwargs):

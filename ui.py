@@ -7,11 +7,11 @@ from ui_utils import *
 
 
 class emp_login_page:
-    def __init__(self, root):
+    def __init__(self, root, login_cmd):
         self.rootframe = ttk.Frame(root)
         self.rootframe.pack(fill="both", expand=1)
         grid_config(self.rootframe)
-        # Existing User Login
+        # Employee Login
         lx1 = ttk.Label(self.rootframe, text="Employee Name", style="small.TLabel")
         lx1.grid(row=1, column=0, padx=10, pady=4, sticky="sw")
 
@@ -34,8 +34,11 @@ class emp_login_page:
             command=lambda: self.show_pswd(self.emp_pswd_entry, self.emp_shown_pswd),
         )
         self.emp_show_pswd_btn.grid(
-            row=4, column=6, columnspan=2, padx=10, pady=4, sticky="sew"
+            row=4, column=6, columnspan=2, padx=10, pady=4, sticky="swe"
         )
+
+        self.login_button = ttk.Button(text='Login', style='accent.TButton', command=login_cmd)
+        self.login_button.grid(row=5, column=0, columnspan=8, padx=10,pady=4, sticky='swe')
 
     def show_pswd(self, widget, flag):
         if not flag:
@@ -50,6 +53,7 @@ class emp_login_page:
 
 
 class pos_page:
+    
     def __init__(self, master, root_window):
         self.rootframe = ttk.Frame(master)
         self.rootframe.pack(fill="both", expand=1)
@@ -64,7 +68,7 @@ class pos_page:
             self.customer_details_page, text="Customer Details", style="big.TLabel"
         )
         self.cust_reg_lbl.grid(
-            row=0, column=0, columnspan=8, padx=10, pady=6, sticky="nswe"
+            row=0, column=0, columnspan=8, padx=10, pady=6, sticky="we"
         )
 
         l2 = ttk.Label(
@@ -526,8 +530,7 @@ class inventory_order_page:
     def all_filter(self, row):
         d = {"item_id": 3, "item_name": 1, "status": 6}
         filter_list = ["item_id", "item_name", "status"]
-        val = all(str(row[d[f]]) == f.get() or f.get() == "" for f in filter_list)
-        return val
+        return all(str(row[d[f]]) == f.get() or f.get() == "" for f in filter_list)
 
     def select_from_filters(self):
         self.invt_table.delete(*self.invt_table.get_children())
@@ -784,7 +787,7 @@ class item_page:
         e1.insert(0, item_id)
         e1.grid(row=1, column=0, padx=10, pady=2, sticky="sew", columnspan=8)
 
-        l2 = ttk.Label(rootframe, text=f"Medicine Name", style="small.TLabel")
+        l2 = ttk.Label(rootframe, text="Medicine Name", style="small.TLabel")
         l2.grid(row=2, column=0, padx=10, pady=2, sticky="sw")
 
         e2 = ttk.Entry(rootframe)
@@ -820,6 +823,8 @@ def main():
     # root.pack(fill="both", expand=1)
 
     s = style(root)
+    
+    page_buf = PageBuffer(root)
 
     # a = login_page(root)
 
