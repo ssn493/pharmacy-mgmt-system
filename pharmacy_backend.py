@@ -195,7 +195,7 @@ def register_new_customer(name, age, sex, addr, ph_no):
     """
     global cursor
     cursor.execute(
-        f"INSERT INTO {customers[name]}(name, age, sex, address, phone_no) VALUES ('{name}',{age},'{sex}','{stock_qty}',{ph_no}) "
+        f"INSERT INTO {customers[name]} (name, age, sex, address, phone_no) VALUES ('{name}',{age},'{sex}','{stock_qty}',{ph_no}) "
     )
 
 
@@ -205,7 +205,7 @@ def delete_customer(cust_id):
 
 def add_new_medicine(med_id, name, manufacturer, stock_qty, mrp, gst_percent):
     execute_sql(
-        f"INSERT INTO {meds[name]}(id, name, manufacturer, stock_qty, mrp, gst_percent) VALUES ({med_id},'{name}','{manufacturer}',{stock_qty},{mrp},{gst_percent}) "
+        f"INSERT INTO {meds[name]} (id, name, manufacturer, stock_qty, mrp, gst_percent) VALUES ({med_id},'{name}','{manufacturer}',{stock_qty},{mrp},{gst_percent}) "
     )
 
 
@@ -239,13 +239,6 @@ def search_med_by_name(medicine_name):
     return execute_sql(f"SELECT * FROM meds WHERE name LIKE '{medicine_name}%'")
 
 
-# def search_cust_by_name(cust_name):
-#     cust_list = execute_sql(
-#         f"SELECT * FROM {customers[name]} WHERE name LIKE '{cust_name}%'"
-#     )
-#     return cust_list
-
-
 def search_cust_by_phone_no(phone_no):
     """_summary_
 
@@ -255,9 +248,7 @@ def search_cust_by_phone_no(phone_no):
     Returns:
         list: list of customers with phone number phone_no
     """
-    return execute_sql(
-        f"SELECT * FROM {customers[name]} WHERE phone_no={phone_no}"
-    )
+    return execute_sql(f"SELECT * FROM {customers[name]} WHERE phone_no={phone_no}")
 
 
 # def filter_custs(name_cond, age_cond, sex_cond):
@@ -314,9 +305,10 @@ def cust_show_order_details(order_id):
 
 def login_emp(emp_id, password):
     stored_password = execute_sql(
-        f"SELECT password FROM {emp[name]} WHERE emp_id={emp_id}"
+        f"SELECT password FROM {emp[name]} WHERE emp_id='{emp_id}'"
     )
-    return password == str(stored_password[0])
+    return password == str(stored_password)
+
 
 def place_inv_order(med_id, med_name, qty):
     global cursor
@@ -357,6 +349,11 @@ def change_inv_order_status(order_id, med_id):
     cursor.execute(update2_cmd)
     conn.commit()
 
+
+def dummy_data():
+    execute_sql(
+        f"INSERT INTO {emp[name]} (emp_id, dept, password) VALUES('admin', 'admin', '1234');"
+    )
 
 
 def create_backend():

@@ -936,6 +936,10 @@ class item_page:
 def main():
     root = tk.Tk()
 
+    height = root.winfo_screenheight()
+    width = root.winfo_screenwidth()
+    root.geometry(f"{int(height/1.4)}x{int(width/1.4)}")
+    root.minsize(620, 384)
     s = style(root)
 
     page_buf = PageBuffer(root)
@@ -983,6 +987,10 @@ def main():
 
 def devel_run_pages(*pages, menu_orient="vertical"):
     root = tk.Tk()
+
+    height = root.winfo_screenheight()
+    width = root.winfo_screenwidth()
+    root.minsize(620, 384)
 
     s = style(root)
 

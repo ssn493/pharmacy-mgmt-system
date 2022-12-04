@@ -46,8 +46,7 @@ def loadfont_lin(fontpath):
 
 def removefont_lin(fontpath):
     global loaded_fonts_lin
+    global LIN_PATH
     dirpath, filename = os.path.split(fontpath)
     if filename in loaded_fonts_lin and os.path.isfile(LIN_PATH+os.path.sep+filename):
         os.remove(LIN_PATH+os.path.sep+filename)
-    else:
-        raise Exception('Font not loaded')
